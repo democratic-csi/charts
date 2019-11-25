@@ -1,0 +1,64 @@
+{{- $root := . -}}
+{{- $fullName := include "democratic-csi.fullname" $root }}
+{{- if .Values.storageClasses -}}
+{{- range .Values.storageClasses }}
+{{- $classRoot := . -}}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ required "storage class name is required" $classRoot.name }}
+  annotations:
+    {{- if $classRoot.defaultClass }}
+    storageclass.kubernetes.io/is-default-class: {{ $classRoot.defaultClass | quote }}
+    {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "democratic-csi.name" $root }}
+    helm.sh/chart: {{ include "democratic-csi.chart" $root }}
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $root.Release.Service }}
+provisioner: {{ $root.Values.csiDriver.name }}
+reclaimPolicy: {{ $classRoot.reclaimPolicy }}
+allowVolumeExpansion: {{ $classRoot.allowVolumeExpansion }}
+volumeBindingMode: {{ $classRoot.volumeBindingMode }}
+{{- if $classRoot.allowedTopologies }}
+allowedTopologies:
+{{ toYaml $classRoot.allowedTopologies }}
+{{- end }}
+
+parameters:
+{{- range $k, $v := $classRoot.parameters }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}
+
+# this loop is deeply connected to the loop for Secret creation below
+{{- range $k, $v := $classRoot.secrets }}
+  csi.storage.k8s.io/{{ $k }}-name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 }}
+  csi.storage.k8s.io/{{ $k }}-namespace: {{ $root.Release.Namespace }}
+{{- end }}
+
+{{- if $classRoot.mountOptions }}
+mountOptions:
+{{ toYaml $classRoot.mountOptions }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+# this loop is deeply connected to the loop for secret parameter settings above
+{{- if .Values.storageClasses -}}
+{{- range .Values.storageClasses }}
+{{- $classRoot := . -}}
+{{- range $k, $v := $classRoot.secrets }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 }}
+type: Opaque
+stringData:
+{{- range $k, $v := $v }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,19 @@
+{{- if .Values.csiDriver.enabled -}}
+---
+apiVersion: storage.k8s.io/v1beta1
+kind: CSIDriver
+metadata:
+  name: {{ .Values.csiDriver.name }}
+  labels:
+    app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
+    helm.sh/chart: {{ include "democratic-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  attachRequired: {{ .Values.csiDriver.attachRequired }}
+  podInfoOnMount: {{ .Values.csiDriver.podInfoOnMount }}
+  #  added in Kubernetes 1.16
+#  volumeLifecycleModes:
+#  - Persistent
+#  - Ephemeral
+{{- end }}

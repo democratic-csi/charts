@@ -1,0 +1,3 @@
+# {{ required "csiDriver.name is required" .Values.csiDriver.name | toYaml | sha256sum }}
+# {{ required "csiDriver.version is required" .Values.csiDriver.version | toYaml | sha256sum }}
+# {{ required "driver.config is required" .Values.driver.config | toYaml | sha256sum }}

@@ -1,0 +1,184 @@
+{{- if .Values.node.enabled -}}
+---
+kind: DaemonSet
+apiVersion: apps/v1beta2
+metadata:
+  name: {{ include "democratic-csi.fullname" . }}-node
+  labels:
+    app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
+    helm.sh/chart: {{ include "democratic-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/csi-role: "node"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/driver-config-secret.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/csi-role: "node"
+    spec:
+      {{- if .Values.node.rbac.enabled }}
+      serviceAccount: {{ include "democratic-csi.fullname" . }}-node-sa
+      {{- end }}
+      # Required by iSCSI
+      hostNetwork: true
+      # Required by multipath detach
+      hostIPC: true
+      containers:
+
+      {{- if .Values.node.driver.enabled }}
+      - name: csi-driver
+        image: democraticcsi/democratic-csi:latest
+        args:
+        - --csi-version={{ .Values.csiDriver.version }}
+        - --csi-name={{ .Values.csiDriver.name }}
+        - --driver-config-file=/config/driver-config-file.yaml
+        - --log-level={{ .Values.node.driver.logLevel }}
+        - --csi-mode=node
+        - --server-socket=/csi-data/csi.sock
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add:
+            - SYS_ADMIN
+          privileged: true
+        env:
+        - name: CSI_NODE_ID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+
+        # prevent crazy error messages due to the /dev host mount
+        terminationMessagePath: /tmp/termination-log
+        terminationMessagePolicy: File
+
+        volumeMounts:
+        - name: socket-dir
+          mountPath: /csi-data
+        - name: mountpoint-dir
+          mountPath: /var/lib/kubelet
+          mountPropagation: Bidirectional
+        - name: iscsi-dir
+          mountPath: /etc/iscsi
+          mountPropagation: Bidirectional
+        - name: iscsi-info
+          mountPath: /var/lib/iscsi
+          mountPropagation: Bidirectional
+        - name: modules-dir
+          mountPath: /lib/modules
+          readOnly: true
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        - name: udev-data
+          mountPath: /run/udev
+        - name: host-dir
+          mountPath: /host
+          mountPropagation: Bidirectional
+        - mountPath: /sys
+          name: sys-dir
+        - name: dev-dir
+          mountPath: /dev
+        - name: config
+          mountPath: /config
+      {{- end }}
+
+      - name: driver-registrar
+        image: quay.io/k8scsi/csi-node-driver-registrar:v1.2.0
+        args:
+        - --v=5
+        - --csi-address=/csi-data/csi.sock
+        - --kubelet-registration-path=/var/lib/kubelet/plugins/{{ .Values.csiDriver.name }}/csi.sock
+        env:
+        - name: KUBE_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        volumeMounts:
+        - mountPath: /csi-data
+          name: socket-dir
+        - name: registration-dir
+          mountPath: /registration
+
+      - name: cleanup
+        image: gcr.io/google_containers/busybox:1.24
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "--"
+        args: [ "while true; do sleep 30; done;" ]
+  
+        lifecycle:
+          # note this runs *before* other containers are terminated
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "rm -rf /plugins/{{ .Values.csiDriver.name }} /registration/{{ .Values.csiDriver.name }}-reg.sock"]
+
+        volumeMounts:
+        - name: plugins-dir
+          mountPath: /plugins
+        - name: registration-dir
+          mountPath: /registration
+
+
+      volumes:
+      - name: socket-dir
+        hostPath:
+          path: /var/lib/kubelet/plugins/{{ .Values.csiDriver.name }}
+          type: DirectoryOrCreate
+      - name: plugins-dir
+        hostPath:
+          path: /var/lib/kubelet/plugins
+          type: Directory
+      - name: registration-dir
+        hostPath:
+          path: /var/lib/kubelet/plugins_registry
+          type: Directory
+      - name: mountpoint-dir
+        hostPath:
+          path: /var/lib/kubelet
+          type: Directory
+      - name: iscsi-dir
+        hostPath:
+          path: /etc/iscsi
+          type: Directory
+      - name: dev-dir
+        hostPath:
+          path: /dev
+          type: Directory
+      - name: modules-dir
+        hostPath:
+          path: /lib/modules
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: udev-data
+        hostPath:
+          path: /run/udev
+      - name: iscsi-info
+        hostPath:
+          path: /var/lib/iscsi
+      - name: sys-dir
+        hostPath:
+          path: /sys
+          type: Directory
+      - name: host-dir
+        hostPath:
+          path: /
+          type: Directory
+      - name: config
+        secret:
+          secretName: {{ include "democratic-csi.fullname" . }}-driver-config
+
+{{- end }}
+

@@ -1,0 +1,48 @@
+{{- $root := . -}}
+{{- $fullName := include "democratic-csi.fullname" $root }}
+{{- if .Values.volumeSnapshotClasses -}}
+{{- range .Values.volumeSnapshotClasses }}
+{{- $classRoot := . -}}
+---
+apiVersion: snapshot.storage.k8s.io/v1alpha1
+kind: VolumeSnapshotClass
+metadata:
+  name: {{ required "snapshot class name is required" $classRoot.name }}
+  labels:
+    app.kubernetes.io/name: {{ include "democratic-csi.name" $root }}
+    helm.sh/chart: {{ include "democratic-csi.chart" $root }}
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $root.Release.Service }}
+snapshotter: {{ $root.Values.csiDriver.name }}
+parameters:
+{{- range $k, $v := $classRoot.parameters }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}
+
+# this loop is deeply connected to the loop for Secret creation below
+{{- range $k, $v := $classRoot.secrets }}
+  csi.storage.k8s.io/{{ $k }}-name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 }}
+  csi.storage.k8s.io/{{ $k }}-namespace: {{ $root.Release.Namespace }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+
+# this loop is deeply connected to the loop for secret parameter settings above
+{{- if .Values.volumeSnapshotClasses -}}
+{{- range .Values.volumeSnapshotClasses }}
+{{- $classRoot := . -}}
+{{- range $k, $v := $classRoot.secrets }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 }}
+type: Opaque
+stringData:
+{{- range $k, $v := $v }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

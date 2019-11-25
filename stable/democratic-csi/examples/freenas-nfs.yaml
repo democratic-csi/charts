@@ -1,0 +1,82 @@
+csiDriver:
+  # should be globally unique for a given cluster
+  name: "org.democratic-csi.nfs"
+
+# add note here about volume expansion requirements
+storageClasses:
+- name: freenas-nfs-csi
+  defaultClass: false
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  allowVolumeExpansion: true
+  parameters:
+    # for block-based storage can be ext3, ext4, xfs
+    # for nfs should be nfs
+    fsType: nfs
+      
+    # if true, volumes created from other snapshots will be
+    # zfs send/received instead of zfs cloned
+    # detachedVolumesFromSnapshots: "false"
+    
+    # if true, volumes created from other volumes will be
+    # zfs send/received instead of zfs cloned
+    # detachedVolumesFromVolumes: "false"
+
+  mountOptions:
+  - noatime
+  - nfsvers=3
+  secrets:
+    provisioner-secret:
+    controller-publish-secret:
+    node-stage-secret:
+    node-publish-secret:
+    controller-expand-secret:
+
+volumeSnapshotClasses:
+- name: freenas-nfs-csi
+  parameters:
+  # if true, snapshots will be created with zfs send/receive
+  # detachedSnapshots: "false"
+
+  secrets:
+    snapshotter-secret:
+
+driver:
+  config:
+    driver: freenas-nfs
+    instance_id:
+    httpConnection:
+      protocol: http
+      host: server address
+      port: 80
+      username: root
+      password:
+      allowInsecure: true
+    sshConnection:
+      host: server address
+      port: 22
+      username: root
+      # use either password or key
+      password: ""
+      privateKey: |
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
+    zfs:
+      datasetParentName: tank/k8s/a/vols
+      detachedSnapshotsDatasetParentName: tank/k8s/a/snaps
+      datasetEnableQuotas: true
+      datasetEnableReservation: false
+      datasetPermissionsMode: "0777"
+      datasetPermissionsUser: root
+      datasetPermissionsGroup: wheel
+    nfs:
+      shareHost: server address
+      shareAlldirs: false
+      shareAllowedHosts: []
+      shareAllowedNetworks: []
+      shareMaprootUser: root
+      shareMaprootGroup: wheel
+      shareMapallUser: ""
+      shareMapallGroup: ""
+

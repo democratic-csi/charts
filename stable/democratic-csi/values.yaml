@@ -1,0 +1,97 @@
+# Default values for democratic-csi.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+driver:
+  config: {}
+    #driver: 
+    # rest of per-driver config data/syntax
+    # ...
+
+# https://kubernetes-csi.github.io/docs/csi-driver-object.html
+csiDriver:
+  # should be globally unique for a given cluster
+  name:
+  version: 1.1.0
+  # create the kubernetes CSIDriver
+  enabled: true
+  attachRequired: false
+  podInfoOnMount: true
+  # clusters before 1.14 requeired manual installation
+  # kubectl create -f https://raw.githubusercontent.com/kubernetes/csi-api/master/pkg/crd/manifests/csidriver.yaml
+  installCRD: false
+
+controller:
+  rbac:
+    enabled: true
+  replicaCount: 1
+  enabled: true
+  
+  # https://kubernetes-csi.github.io/docs/external-provisioner.html
+  externalProvisioner:
+    enabled: true
+
+  # https://kubernetes-csi.github.io/docs/external-resizer.html
+  externalResizer:
+    enabled: true
+
+  # https://kubernetes-csi.github.io/docs/external-snapshotter.html
+  externalSnapshotter:
+    enabled: true
+
+  # https://kubernetes-csi.github.io/docs/cluster-driver-registrar.html
+  # not implemented, likely uncessary at this point
+  clusterDriverRegistrar:
+    enabled: false
+
+  # https://kubernetes-csi.github.io/docs/livenessprobe.html
+  livenessProbe:
+    enabled: true
+
+  # democratic-csi controller
+  driver:
+    enabled: true
+    logLevel: info
+
+node:
+  rbac:
+    enabled: true
+  enabled: true
+  
+  # democratic-csi node
+  driver:
+    enabled: true
+    logLevel: info
+  
+  # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
+  driverRegistrar:
+    enabled: true
+
+# add note here about volume expansion requirements
+storageClasses: []
+#- name:
+#  defaultClass: false
+#  reclaimPolicy: Delete
+#  volumeBindingMode: Immediate
+#  allowVolumeExpansion: true
+#  parameters:
+#    # for block-based storage can be ext3, ext4, xfs
+#    # for nfs should be nfs
+#    fsType:
+#  mountOptions: []
+#  secrets:
+#    provisioner-secret:
+#    controller-publish-secret:
+#    node-stage-secret:
+#    node-publish-secret:
+#    controller-expand-secret:
+
+volumeSnapshotClasses: []
+#- name:
+#  parameters:
+#  secrets:
+#    snapshotter-secret:
+
