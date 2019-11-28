@@ -1,7 +1,7 @@
 {{- if .Values.node.enabled -}}
 ---
 kind: DaemonSet
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 metadata:
   name: {{ include "democratic-csi.fullname" . }}-node
   labels:
