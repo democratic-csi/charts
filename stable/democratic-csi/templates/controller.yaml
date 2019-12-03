@@ -32,7 +32,7 @@ spec:
       {{- if .Values.controller.externalProvisioner.enabled }}
       # https://github.com/kubernetes-csi/external-provisioner
       - name: external-provisioner
-        image: quay.io/k8scsi/csi-provisioner:v1.3.1
+        image: quay.io/k8scsi/csi-provisioner:v1.4.0
         args:
         - --v=5
         - --enable-leader-election
