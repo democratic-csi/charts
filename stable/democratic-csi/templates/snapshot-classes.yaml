@@ -21,7 +21,7 @@ parameters:
 
 # this loop is deeply connected to the loop for Secret creation below
 {{- range $k, $v := $classRoot.secrets }}
-  csi.storage.k8s.io/{{ $k }}-name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 }}
+  csi.storage.k8s.io/{{ $k }}-name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 | trimSuffix "-" }}
   csi.storage.k8s.io/{{ $k }}-namespace: {{ $root.Release.Namespace }}
 {{- end }}
 {{- end }}
@@ -37,7 +37,7 @@ parameters:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 }}
+  name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 | trimSuffix "-" }}
 type: Opaque
 stringData:
 {{- range $k, $v := $v }}
