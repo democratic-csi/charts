@@ -13,7 +13,14 @@ spec:
   attachRequired: {{ .Values.csiDriver.attachRequired }}
   podInfoOnMount: {{ .Values.csiDriver.podInfoOnMount }}
   #  added in Kubernetes 1.16
-#  volumeLifecycleModes:
-#  - Persistent
-#  - Ephemeral
+  #  volumeLifecycleModes:
+  #  - Persistent
+  #  - Ephemeral
+  {{- if semverCompare ">=1.16.0-0" .Capabilities.KubeVersion.GitVersion }}
+  {{- if .Values.csiDriver.volumeLifecycleModes }}
+  volumeLifecycleModes:
+{{ toYaml .Values.csiDriver.volumeLifecycleModes | indent 2 }}
+  {{- end }}
+  {{- end }}
+
 {{- end }}

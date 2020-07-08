@@ -1,3 +1,4 @@
+{{- if .Values.node.enabled -}}
 {{- if .Values.node.rbac.enabled -}}
 ---
 apiVersion: v1
@@ -51,4 +52,5 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "democratic-csi.fullname" . }}-node-sa
   namespace: {{.Release.Namespace}}
+{{- end }}
 {{- end }}

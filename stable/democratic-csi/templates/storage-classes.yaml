@@ -41,7 +41,7 @@ parameters:
 mountOptions:
 {{ toYaml $classRoot.mountOptions }}
 {{- end }}
-{{- end }}
+{{ end }}
 {{- end }}
 
 # this loop is deeply connected to the loop for secret parameter settings above

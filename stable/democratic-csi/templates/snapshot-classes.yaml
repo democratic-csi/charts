@@ -4,7 +4,11 @@
 {{- range .Values.volumeSnapshotClasses }}
 {{- $classRoot := . -}}
 ---
+{{- if semverCompare ">=1.17.0-0" $root.Capabilities.KubeVersion.GitVersion }}
+apiVersion: snapshot.storage.k8s.io/v1beta1
+{{- else }}
 apiVersion: snapshot.storage.k8s.io/v1alpha1
+{{- end }}
 kind: VolumeSnapshotClass
 metadata:
   name: {{ required "snapshot class name is required" $classRoot.name }}
@@ -13,7 +17,12 @@ metadata:
     helm.sh/chart: {{ include "democratic-csi.chart" $root }}
     app.kubernetes.io/instance: {{ $root.Release.Name }}
     app.kubernetes.io/managed-by: {{ $root.Release.Service }}
+{{- if semverCompare ">=1.17.0-0" $root.Capabilities.KubeVersion.GitVersion }}
+driver: {{ $root.Values.csiDriver.name }}
+deletionPolicy: {{ $classRoot.deletionPolicy | default "Delete" }}
+{{- else }}
 snapshotter: {{ $root.Values.csiDriver.name }}
+{{- end }}
 parameters:
 {{- range $k, $v := $classRoot.parameters }}
   {{ $k }}: {{ $v | quote }}
@@ -24,7 +33,7 @@ parameters:
   csi.storage.k8s.io/{{ $k }}-name: {{ printf "%s-%s-%s" $k $classRoot.name $fullName | trunc 63 | trimSuffix "-" }}
   csi.storage.k8s.io/{{ $k }}-namespace: {{ $root.Release.Namespace }}
 {{- end }}
-{{- end }}
+{{ end }}
 {{- end }}
 
 

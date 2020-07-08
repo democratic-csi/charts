@@ -23,6 +23,7 @@ csiDriver:
   # clusters before 1.14 requeired manual installation
   # kubectl create -f https://raw.githubusercontent.com/kubernetes/csi-api/master/pkg/crd/manifests/csidriver.yaml
   installCRD: false
+  # volumeLifecycleModes: []
 
 controller:
   rbac:
@@ -33,14 +34,21 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-provisioner.html
   externalProvisioner:
     enabled: true
+    image: quay.io/k8scsi/csi-provisioner:v1.6.0
 
   # https://kubernetes-csi.github.io/docs/external-resizer.html
   externalResizer:
     enabled: true
+    image: quay.io/k8scsi/csi-resizer:v0.5.0
 
   # https://kubernetes-csi.github.io/docs/external-snapshotter.html
   externalSnapshotter:
     enabled: true
+    # v1.17+
+    #image: quay.io/k8scsi/csi-snapshotter:v2.1.0
+    
+    # v1.13-v1.16
+    #image: quay.io/k8scsi/csi-snapshotter:v1.2.2
 
   # https://kubernetes-csi.github.io/docs/cluster-driver-registrar.html
   # not implemented, likely uncessary at this point
@@ -50,10 +58,12 @@ controller:
   # https://kubernetes-csi.github.io/docs/livenessprobe.html
   livenessProbe:
     enabled: true
+    image: quay.io/k8scsi/livenessprobe:v2.0.0
 
   # democratic-csi controller
   driver:
     enabled: true
+    image: democraticcsi/democratic-csi:latest
     logLevel: info
 
 node:
@@ -64,11 +74,13 @@ node:
   # democratic-csi node
   driver:
     enabled: true
+    image: democraticcsi/democratic-csi:latest
     logLevel: info
   
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true
+    image: quay.io/k8scsi/csi-node-driver-registrar:v1.2.0
 
 # add note here about volume expansion requirements
 storageClasses: []
@@ -91,6 +103,7 @@ storageClasses: []
 
 volumeSnapshotClasses: []
 #- name:
+#  deletionPolicy: Delete | Retain
 #  parameters:
 #  secrets:
 #    snapshotter-secret:

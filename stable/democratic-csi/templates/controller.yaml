@@ -32,7 +32,7 @@ spec:
       {{- if .Values.controller.externalProvisioner.enabled }}
       # https://github.com/kubernetes-csi/external-provisioner
       - name: external-provisioner
-        image: quay.io/k8scsi/csi-provisioner:v1.4.0
+        image: {{ .Values.controller.externalProvisioner.image }}
         args:
         - --v=5
         - --enable-leader-election
@@ -48,7 +48,7 @@ spec:
       {{- if .Values.controller.externalResizer.enabled }}
       # https://github.com/kubernetes-csi/external-resizer
       - name: external-resizer
-        image: quay.io/k8scsi/csi-resizer:v0.3.0
+        image: {{ .Values.controller.externalResizer.image }}
         args:
         - --v=5
         - --leader-election
@@ -64,7 +64,16 @@ spec:
       #  - https://github.com/rook/rook/issues/4178
       #  - https://github.com/kubernetes-csi/external-snapshotter/issues/147#issuecomment-513664310
       - name: external-snapshotter
+        {{- if .Values.controller.externalSnapshotter.image }}
+        image: {{ .Values.controller.externalSnapshotter.image }}        
+        {{- else }}
+        {{- if semverCompare ">=1.17.0-0" .Capabilities.KubeVersion.GitVersion }}
+        image: quay.io/k8scsi/csi-snapshotter:v2.1.0
+        {{- else }}
         image: quay.io/k8scsi/csi-snapshotter:v1.2.2
+        {{- end }}
+        {{- end }}
+
         args:
         - --v=5
         - --leader-election
@@ -78,7 +87,7 @@ spec:
       {{- if .Values.controller.livenessProbe.enabled }}
       # https://github.com/kubernetes-csi/livenessprobe
       - name: livenessprobe
-        image: quay.io/k8scsi/livenessprobe:v1.1.0
+        image: {{ .Values.controller.livenessProbe.image }}
         args:
         - --v=5
         - --csi-address=/csi-data/csi.sock
@@ -89,7 +98,7 @@ spec:
 
       {{- if .Values.controller.driver.enabled }}
       - name: csi-driver
-        image: democraticcsi/democratic-csi:latest
+        image: {{ .Values.controller.driver.image }}
         args:
         - --csi-version={{ .Values.csiDriver.version }}
         - --csi-name={{ .Values.csiDriver.name }}
