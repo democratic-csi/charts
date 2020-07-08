@@ -1,0 +1,31 @@
+# driver only works with 1.16+
+csiDriver:
+  # should be globally unique for a given cluster
+  name: "org.democratic-csi.zfs-ephemeral"
+  volumeLifecycleModes:
+  - Ephemeral
+
+controller:
+  enabled: false
+
+driver:
+  config:
+    #driver: 
+    # rest of per-driver config data/syntax
+    driver: zfs-local-ephemeral-inline
+    service:
+      identity: {}
+      controller: {}
+      node: {}
+    zfs:
+      chroot: "/host"
+      datasetParentName: tank/k8s/inline
+      properties:
+        # add any arbitrary properties you want here
+        #refquota:
+        #  value: 10M
+        #  allowOverride: false # default is to allow inline settings to override
+        #refreservation:
+        #  value: 5M
+        # ...
+
