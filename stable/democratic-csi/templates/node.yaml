@@ -117,7 +117,7 @@ spec:
           - "/bin/sh"
           - "-c"
           - "--"
-        args: [ "while true; do sleep 30; done;" ]
+        args: [ "while true; do sleep 2; done;" ]
   
         lifecycle:
           # note this runs *before* other containers are terminated
