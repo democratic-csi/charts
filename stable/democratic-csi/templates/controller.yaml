@@ -1,4 +1,5 @@
-{{- if .Values.controller.enabled -}}
+{{- if and .Values.controller.enabled (eq .Values.controller.strategy "deployment") -}}
+{{- $controllerStrategy := "deployment" -}}
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -28,77 +29,34 @@ spec:
       {{- if .Values.controller.rbac.enabled }}
       serviceAccount: {{ include "democratic-csi.fullname" . }}-controller-sa
       {{- end }}
+      hostNetwork: {{ .Values.controller.hostNetwork }}
+      hostIPC: {{ .Values.controller.hostIPC }}
       containers:
-      {{- if .Values.controller.externalProvisioner.enabled }}
-      # https://github.com/kubernetes-csi/external-provisioner
-      - name: external-provisioner
-        image: {{ .Values.controller.externalProvisioner.image }}
-        args:
-        - --v=5
-        - --enable-leader-election
-        - --leader-election-type=leases
-        - --timeout=90s
-        - --worker-threads=10
-        - --csi-address=/csi-data/csi.sock
-        volumeMounts:
-        - mountPath: /csi-data
-          name: socket-dir
+
+      {{- if and .Values.controller.externalProvisioner.enabled (eq .Values.controller.strategy $controllerStrategy) }}
+{{ include "democratic-csi.external-provisioner-container" . | indent 6 }}
       {{- end }}
 
-      {{- if .Values.controller.externalResizer.enabled }}
-      # https://github.com/kubernetes-csi/external-resizer
-      - name: external-resizer
-        image: {{ .Values.controller.externalResizer.image }}
-        args:
-        - --v=5
-        - --leader-election
-        - --csi-address=/csi-data/csi.sock
-        volumeMounts:
-        - mountPath: /csi-data
-          name: socket-dir
+      {{- if and .Values.controller.externalResizer.enabled (eq .Values.controller.strategy $controllerStrategy) }}
+{{ include "democratic-csi.external-resizer-container" . | indent 6 }}
       {{- end }}
 
-      {{- if .Values.controller.externalSnapshotter.enabled }}
-      # https://github.com/kubernetes-csi/external-snapshotte
-      # beware upgrading version:
-      #  - https://github.com/rook/rook/issues/4178
-      #  - https://github.com/kubernetes-csi/external-snapshotter/issues/147#issuecomment-513664310
-      - name: external-snapshotter
-        {{- if .Values.controller.externalSnapshotter.image }}
-        image: {{ .Values.controller.externalSnapshotter.image }}        
-        {{- else }}
-        {{- if semverCompare ">=1.17.0-0" .Capabilities.KubeVersion.GitVersion }}
-        image: quay.io/k8scsi/csi-snapshotter:v2.1.0
-        {{- else }}
-        image: quay.io/k8scsi/csi-snapshotter:v1.2.2
-        {{- end }}
-        {{- end }}
-
-        args:
-        - --v=5
-        - --leader-election
-        - --csi-address=/csi-data/csi.sock
-        - --timeout=90s
-        volumeMounts:
-        - mountPath: /csi-data
-          name: socket-dir
+      {{- if and .Values.controller.externalSnapshotter.enabled (eq .Values.controller.strategy $controllerStrategy) }}
+{{ include "democratic-csi.external-snapshotter-container" . | indent 6 }}
       {{- end }}
 
       {{- if .Values.controller.livenessProbe.enabled }}
-      # https://github.com/kubernetes-csi/livenessprobe
-      - name: livenessprobe
+{{ include "democratic-csi.livenessprobe-container" . | indent 6 }}
         image: {{ .Values.controller.livenessProbe.image }}
-        args:
-        - --v=5
-        - --csi-address=/csi-data/csi.sock
-        volumeMounts:
-        - mountPath: /csi-data
-          name: socket-dir
       {{- end }}
 
       {{- if .Values.controller.driver.enabled }}
       - name: csi-driver
         image: {{ .Values.controller.driver.image }}
+        {{- if .Values.controller.driver.lifecycle }}
+        lifecycle:
+{{ toYaml .Values.controller.driver.lifecycle | indent 10 }}
+        {{- end }}
         args:
         - --csi-version={{ .Values.csiDriver.version }}
         - --csi-name={{ .Values.csiDriver.name }}
@@ -108,6 +66,7 @@ spec:
         - --server-socket=/csi-data/csi.sock
         imagePullPolicy: Always
 
+        # https://github.com/kubernetes-csi/livenessprobe/issues/82
         {{- if .Values.controller.livenessProbe.enabled }}
         # Defining port which will be used to GET plugin health status
         # 9808 is default, but can be changed.
@@ -130,6 +89,9 @@ spec:
           mountPath: /csi-data
         - name: config
           mountPath: /config
+{{- if .Values.controller.driver.extraVolumeMounts }}
+{{ toYaml .Values.controller.driver.extraVolumeMounts | indent 8 }}
+{{- end }}
       {{- end }}
           
       volumes:
@@ -138,4 +100,8 @@ spec:
       - name: config
         secret:
           secretName: {{ include "democratic-csi.fullname" . }}-driver-config
+{{- if .Values.controller.extraVolumes }}
+{{ toYaml .Values.controller.extraVolumes | indent 6 }}
+{{- end }}
+
 {{- end }}

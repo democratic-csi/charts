@@ -30,6 +30,12 @@ controller:
     enabled: true
   replicaCount: 1
   enabled: true
+  hostNetwork: false
+  hostIPC: false
+  
+  # deployment = deploy controller parts in a distinct deployment
+  # node       = deploy controller as sidecars with node daemonset
+  strategy: deployment
   
   # https://kubernetes-csi.github.io/docs/external-provisioner.html
   externalProvisioner:
@@ -65,22 +71,58 @@ controller:
     enabled: true
     image: democraticcsi/democratic-csi:latest
     logLevel: info
+    lifecycle:
+#      postStart:
+#        exec:
+#          command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+#      preStop:
+#        exec:
+#          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
+
+    extraVolumeMounts: []
+#    - name: foo
+#      mountPath: /foo
+
+  extraVolumes: []
+#  - name: foo
+#    hostPath:
+#      path: /dev
+#      type: Directory
 
 node:
   rbac:
     enabled: true
   enabled: true
-  
+  hostNetwork: true
+  hostIPC: true
+
   # democratic-csi node
   driver:
     enabled: true
     image: democraticcsi/democratic-csi:latest
     logLevel: info
+    lifecycle:
+#      postStart:
+#        exec:
+#          command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+#      preStop:
+#        exec:
+#          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
+
+    extraVolumeMounts: []
+#    - name: foo
+#      mountPath: /foo
   
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true
     image: quay.io/k8scsi/csi-node-driver-registrar:v1.2.0
+
+  extraVolumes: []
+#  - name: foo
+#    hostPath:
+#      path: /dev
+#      type: Directory
 
 # add note here about volume expansion requirements
 storageClasses: []

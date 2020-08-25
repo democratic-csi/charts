@@ -34,6 +34,11 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments"]
     verbs: ["get", "list", "watch", "update"]
+
+{{- if and .Values.controller.enabled .Values.controller.rbac.enabled (eq .Values.controller.strategy "node") }}
+{{ include "democratic-csi.controller-rbac-rules" . | indent 2 }}
+{{- end }}
+
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1

@@ -30,3 +30,124 @@ Create chart name and version as used by the chart label.
 {{- define "democratic-csi.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "democratic-csi.external-provisioner-container" -}}
+# https://github.com/kubernetes-csi/external-provisioner
+- name: external-provisioner
+  image: {{ .Values.controller.externalProvisioner.image }}
+  args:
+  - --v=5
+  - --enable-leader-election
+  - --leader-election-type=leases
+  - --timeout=90s
+  - --worker-threads=10
+  - --extra-create-metadata
+  - --csi-address=/csi-data/csi.sock
+  volumeMounts:
+  - mountPath: /csi-data
+    name: socket-dir
+{{- end -}}
+
+
+{{- define "democratic-csi.external-resizer-container" -}}
+# https://github.com/kubernetes-csi/external-resizer
+- name: external-resizer
+  image: {{ .Values.controller.externalResizer.image }}
+  args:
+  - --v=5
+  - --leader-election
+  - --csi-address=/csi-data/csi.sock
+  volumeMounts:
+  - mountPath: /csi-data
+    name: socket-dir
+{{- end -}}
+
+{{- define "democratic-csi.external-snapshotter-container" -}}
+# https://github.com/kubernetes-csi/external-snapshotter
+# beware upgrading version:
+#  - https://github.com/rook/rook/issues/4178
+#  - https://github.com/kubernetes-csi/external-snapshotter/issues/147#issuecomment-513664310
+- name: external-snapshotter
+  {{- if .Values.controller.externalSnapshotter.image }}
+  image: {{ .Values.controller.externalSnapshotter.image }}        
+  {{- else }}
+  {{- if semverCompare ">=1.17.0-0" .Capabilities.KubeVersion.GitVersion }}
+  image: quay.io/k8scsi/csi-snapshotter:v2.1.0
+  {{- else }}
+  image: quay.io/k8scsi/csi-snapshotter:v1.2.2
+  {{- end }}
+  {{- end }}
+  args:
+  - --v=5
+  - --leader-election
+  - --csi-address=/csi-data/csi.sock
+  - --timeout=90s
+  volumeMounts:
+  - mountPath: /csi-data
+    name: socket-dir
+{{- end -}}
+
+{{- define "democratic-csi.livenessprobe-container" -}}
+# https://github.com/kubernetes-csi/livenessprobe
+- name: livenessprobe
+  args:
+  - --v=5
+  - --csi-address=/csi-data/csi.sock
+  volumeMounts:
+  - mountPath: /csi-data
+    name: socket-dir
+{{- end -}}
+
+
+{{- define "democratic-csi.controller-rbac-rules" -}}
+# Allow listing and creating CRDs
+- apiGroups: ['apiextensions.k8s.io']
+  resources: ['customresourcedefinitions']
+  verbs: ['list', 'create']
+- apiGroups: ['']
+  resources: ['persistentvolumes']
+  verbs: ['create', 'delete', 'get', 'list', 'watch', 'update', 'patch']
+- apiGroups: ['']
+  resources: ['secrets']
+  verbs: ['get', 'list']
+- apiGroups: ['']
+  resources: ['persistentvolumeclaims']
+  verbs: ['get', 'list', 'watch', 'update', 'patch']
+- apiGroups: ['']
+  resources: ['persistentvolumeclaims/status']
+  verbs: ['get', 'list', 'watch', 'update', 'patch']
+- apiGroups: ['']
+  resources: ['nodes']
+  verbs: ['get', 'list', 'watch']
+- apiGroups: ['storage.k8s.io']
+  resources: ['volumeattachments']
+  verbs: ['get', 'list', 'watch', 'update']
+- apiGroups: ['storage.k8s.io']
+  resources: ['storageclasses']
+  verbs: ['get', 'list', 'watch']
+- apiGroups: ['csi.storage.k8s.io']
+  resources: ['csidrivers']
+  verbs: ['get', 'list', 'watch', 'update', 'create']
+- apiGroups: ['']
+  resources: ['events']
+  verbs: ['list', 'watch', 'create', 'update', 'patch']
+- apiGroups: ["snapshot.storage.k8s.io"]
+  resources: ["volumesnapshotclasses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ['snapshot.storage.k8s.io']
+  resources: ['volumesnapshots/status']
+  verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+- apiGroups: ["snapshot.storage.k8s.io"]
+  resources: ["volumesnapshotcontents"]
+  verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+- apiGroups: ["snapshot.storage.k8s.io"]
+  resources: ["volumesnapshots"]
+  verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+- apiGroups: ["csi.storage.k8s.io"]
+  resources: ["csinodeinfos"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["get", "watch", "list", "delete", "update", "create"]
+{{- end -}}
+
