@@ -61,10 +61,8 @@ controller:
   clusterDriverRegistrar:
     enabled: false
 
-  # https://kubernetes-csi.github.io/docs/livenessprobe.html
   livenessProbe:
     enabled: true
-    image: quay.io/k8scsi/livenessprobe:v2.0.0
 
   # democratic-csi controller
   driver:
@@ -78,6 +76,13 @@ controller:
 #      preStop:
 #        exec:
 #          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
+
+    securityContext:
+#      allowPrivilegeEscalation: true
+#      capabilities:
+#        add:
+#        - SYS_ADMIN
+#      privileged: true
 
     extraVolumeMounts: []
 #    - name: foo
@@ -95,6 +100,9 @@ node:
   enabled: true
   hostNetwork: true
   hostIPC: true
+
+  livenessProbe:
+    enabled: true
 
   # democratic-csi node
   driver:

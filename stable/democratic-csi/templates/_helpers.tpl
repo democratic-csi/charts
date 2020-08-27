@@ -87,18 +87,6 @@ Create chart name and version as used by the chart label.
     name: socket-dir
 {{- end -}}
 
-{{- define "democratic-csi.livenessprobe-container" -}}
-# https://github.com/kubernetes-csi/livenessprobe
-- name: livenessprobe
-  args:
-  - --v=5
-  - --csi-address=/csi-data/csi.sock
-  volumeMounts:
-  - mountPath: /csi-data
-    name: socket-dir
-{{- end -}}
-
-
 {{- define "democratic-csi.controller-rbac-rules" -}}
 # Allow listing and creating CRDs
 - apiGroups: ['apiextensions.k8s.io']

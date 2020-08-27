@@ -45,17 +45,16 @@ spec:
 {{ include "democratic-csi.external-snapshotter-container" . | indent 6 }}
       {{- end }}
 
-      {{- if .Values.controller.livenessProbe.enabled }}
-{{ include "democratic-csi.livenessprobe-container" . | indent 6 }}
-        image: {{ .Values.controller.livenessProbe.image }}
-      {{- end }}
-
       {{- if .Values.controller.driver.enabled }}
       - name: csi-driver
         image: {{ .Values.controller.driver.image }}
         {{- if .Values.controller.driver.lifecycle }}
         lifecycle:
 {{ toYaml .Values.controller.driver.lifecycle | indent 10 }}
+        {{- end }}
+        {{- if .Values.controller.driver.securityContext }}
+        securityContext:
+{{ toYaml .Values.controller.driver.securityContext | indent 10 }}
         {{- end }}
         args:
         - --csi-version={{ .Values.csiDriver.version }}
@@ -66,20 +65,14 @@ spec:
         - --server-socket=/csi-data/csi.sock
         imagePullPolicy: Always
 
-        # https://github.com/kubernetes-csi/livenessprobe/issues/82
         {{- if .Values.controller.livenessProbe.enabled }}
-        # Defining port which will be used to GET plugin health status
-        # 9808 is default, but can be changed.
-        ports:
-        - containerPort: 9808
-          name: healthz
-          protocol: TCP
-        # The probe
         livenessProbe:
           failureThreshold: 5
-          httpGet:
-            path: /healthz
-            port: healthz
+          exec:
+            command:
+            - bin/liveness-probe
+            - --csi-version={{ .Values.csiDriver.version }}
+            - --csi-address=/csi-data/csi.sock
           initialDelaySeconds: 10
           timeoutSeconds: 3
           periodSeconds: 60
