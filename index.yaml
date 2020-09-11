@@ -3,6 +3,15 @@ entries:
   democratic-csi:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2020-09-11T12:43:08.475032112Z"
+    description: A Helm chart for Kubernetes
+    digest: 49053529f555eb15009a93654de4aca16ffb9d5967526adfda32557a1ce6e423
+    name: democratic-csi
+    urls:
+    - https://github.com/democratic-csi/charts/releases/download/democratic-csi-0.4.1/democratic-csi-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2020-08-27T18:28:12.51815112Z"
     description: A Helm chart for Kubernetes
     digest: 4325634abb83cd3074a2dd584ed87cc9d096fcb12167d654a72c249f9ebfc486
