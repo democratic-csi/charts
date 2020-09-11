@@ -89,7 +89,7 @@ spec:
           
       volumes:
       - name: socket-dir
-        emptyDir:
+        emptyDir: {}
       - name: config
         secret:
           secretName: {{ include "democratic-csi.fullname" . }}-driver-config
