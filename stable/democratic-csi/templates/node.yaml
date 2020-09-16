@@ -98,7 +98,7 @@ spec:
         - name: socket-dir
           mountPath: /csi-data
         - name: mountpoint-dir
-          mountPath: /var/lib/kubelet
+          mountPath: {{ .Values.node.kubeletHostPath }}
           mountPropagation: Bidirectional
         - name: iscsi-dir
           mountPath: /etc/iscsi
@@ -134,7 +134,7 @@ spec:
         args:
         - --v=5
         - --csi-address=/csi-data/csi.sock
-        - --kubelet-registration-path=/var/lib/kubelet/plugins/{{ .Values.csiDriver.name }}/csi.sock
+        - --kubelet-registration-path={{ .Values.node.kubeletHostPath }}/plugins/{{ .Values.csiDriver.name }}/csi.sock
         env:
         - name: KUBE_NODE_NAME
           valueFrom:
@@ -171,19 +171,19 @@ spec:
       volumes:
       - name: socket-dir
         hostPath:
-          path: /var/lib/kubelet/plugins/{{ .Values.csiDriver.name }}
+          path: {{ .Values.node.kubeletHostPath }}/plugins/{{ .Values.csiDriver.name }}
           type: DirectoryOrCreate
       - name: plugins-dir
         hostPath:
-          path: /var/lib/kubelet/plugins
+          path: {{ .Values.node.kubeletHostPath }}/plugins
           type: Directory
       - name: registration-dir
         hostPath:
-          path: /var/lib/kubelet/plugins_registry
+          path: {{ .Values.node.kubeletHostPath }}/plugins_registry
           type: Directory
       - name: mountpoint-dir
         hostPath:
-          path: /var/lib/kubelet
+          path: {{ .Values.node.kubeletHostPath }}
           type: Directory
       - name: iscsi-dir
         hostPath:
