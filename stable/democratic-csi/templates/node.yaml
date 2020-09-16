@@ -1,5 +1,6 @@
 {{- if .Values.node.enabled -}}
 {{- $controllerStrategy := "node" -}}
+{{- $mountIscsi := include "democratic-csi.mount-iscsi" . | eq "true" }}
 ---
 kind: DaemonSet
 apiVersion: apps/v1
@@ -100,12 +101,14 @@ spec:
         - name: mountpoint-dir
           mountPath: {{ .Values.node.kubeletHostPath }}
           mountPropagation: Bidirectional
+        {{- if $mountIscsi }}
         - name: iscsi-dir
           mountPath: /etc/iscsi
           mountPropagation: Bidirectional
         - name: iscsi-info
           mountPath: /var/lib/iscsi
           mountPropagation: Bidirectional
+        {{- end }}
         - name: modules-dir
           mountPath: /lib/modules
           readOnly: true
@@ -185,10 +188,15 @@ spec:
         hostPath:
           path: {{ .Values.node.kubeletHostPath }}
           type: Directory
+      {{- if $mountIscsi }}
       - name: iscsi-dir
         hostPath:
           path: /etc/iscsi
           type: Directory
+      - name: iscsi-info
+        hostPath:
+          path: /var/lib/iscsi
+      {{- end }}
       - name: dev-dir
         hostPath:
           path: /dev
@@ -202,9 +210,6 @@ spec:
       - name: udev-data
         hostPath:
           path: /run/udev
-      - name: iscsi-info
-        hostPath:
-          path: /var/lib/iscsi
       - name: sys-dir
         hostPath:
           path: /sys
