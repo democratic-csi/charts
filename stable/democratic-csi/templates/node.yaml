@@ -112,9 +112,11 @@ spec:
         - name: modules-dir
           mountPath: /lib/modules
           readOnly: true
+        {{- if .Values.node.driver.localtimeHostPath }}
         - name: localtime
           mountPath: /etc/localtime
           readOnly: true
+        {{- end }}
         - name: udev-data
           mountPath: /run/udev
         - name: host-dir
@@ -204,9 +206,11 @@ spec:
       - name: modules-dir
         hostPath:
           path: /lib/modules
+      {{- if .Values.node.driver.localtimeHostPath }}
       - name: localtime
         hostPath:
-          path: /etc/localtime
+          path: {{ .Values.node.driver.localtimeHostPath }}
+      {{- end }}
       - name: udev-data
         hostPath:
           path: /run/udev

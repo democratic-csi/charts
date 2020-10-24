@@ -110,6 +110,8 @@ node:
     enabled: true
     image: democraticcsi/democratic-csi:latest
     logLevel: info
+    # set path to null if your OS has no localtime file (e.g. for RancherOS)
+    localtimeHostPath: /etc/localtime
     lifecycle:
 #      postStart:
 #        exec:
