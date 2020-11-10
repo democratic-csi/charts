@@ -94,6 +94,12 @@ controller:
 #      path: /dev
 #      type: Directory
 
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
 node:
   rbac:
     enabled: true
@@ -134,6 +140,12 @@ node:
 #    hostPath:
 #      path: /dev
 #      type: Directory
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
 
 # add note here about volume expansion requirements
 storageClasses: []
