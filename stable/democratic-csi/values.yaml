@@ -6,6 +6,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 driver:
+  # see the driver-config-secret.yaml for syntax
+  existingConfigSecret:
   config: {}
     #driver: 
     # rest of per-driver config data/syntax
@@ -15,7 +17,7 @@ driver:
 csiDriver:
   # should be globally unique for a given cluster
   name:
-  version: 1.1.0
+  version: 1.2.0
   # create the kubernetes CSIDriver
   enabled: true
   attachRequired: false
@@ -40,21 +42,17 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-provisioner.html
   externalProvisioner:
     enabled: true
-    image: quay.io/k8scsi/csi-provisioner:v1.6.0
+    image: k8s.gcr.io/sig-storage/csi-provisioner:v2.0.4
 
   # https://kubernetes-csi.github.io/docs/external-resizer.html
   externalResizer:
     enabled: true
-    image: quay.io/k8scsi/csi-resizer:v0.5.0
+    image: k8s.gcr.io/sig-storage/csi-resizer:v1.0.1
 
   # https://kubernetes-csi.github.io/docs/external-snapshotter.html
   externalSnapshotter:
     enabled: true
-    # v1.17+
-    #image: quay.io/k8scsi/csi-snapshotter:v2.1.0
-    
-    # v1.13-v1.16
-    #image: quay.io/k8scsi/csi-snapshotter:v1.2.2
+    image: k8s.gcr.io/sig-storage/csi-snapshotter:v3.0.2
 
   # https://kubernetes-csi.github.io/docs/cluster-driver-registrar.html
   # not implemented, likely uncessary at this point
@@ -68,6 +66,7 @@ controller:
   driver:
     enabled: true
     image: democraticcsi/democratic-csi:latest
+    # imagePullPolicy: Always
     logLevel: info
     lifecycle:
 #      postStart:
@@ -115,6 +114,7 @@ node:
   driver:
     enabled: true
     image: democraticcsi/democratic-csi:latest
+    # imagePullPolicy: Always
     logLevel: info
     # set path to null if your OS has no localtime file (e.g. for RancherOS)
     localtimeHostPath: /etc/localtime
@@ -133,7 +133,7 @@ node:
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true
-    image: quay.io/k8scsi/csi-node-driver-registrar:v1.2.0
+    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.0.1
 
   extraVolumes: []
 #  - name: foo

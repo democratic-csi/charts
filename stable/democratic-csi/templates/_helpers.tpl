@@ -46,8 +46,8 @@ Create chart name and version as used by the chart label.
   image: {{ .Values.controller.externalProvisioner.image }}
   args:
   - --v=5
-  - --enable-leader-election
-  - --leader-election-type=leases
+  - --leader-election
+  - --leader-election-namespace={{ .Release.Namespace }}
   - --timeout=90s
   - --worker-threads=10
   - --extra-create-metadata
@@ -65,6 +65,9 @@ Create chart name and version as used by the chart label.
   args:
   - --v=5
   - --leader-election
+  - --leader-election-namespace={{ .Release.Namespace }}
+  - --timeout=90s
+  - --workers=10
   - --csi-address=/csi-data/csi.sock
   volumeMounts:
   - mountPath: /csi-data
@@ -77,20 +80,14 @@ Create chart name and version as used by the chart label.
 #  - https://github.com/rook/rook/issues/4178
 #  - https://github.com/kubernetes-csi/external-snapshotter/issues/147#issuecomment-513664310
 - name: external-snapshotter
-  {{- if .Values.controller.externalSnapshotter.image }}
-  image: {{ .Values.controller.externalSnapshotter.image }}        
-  {{- else }}
-  {{- if semverCompare ">=1.17.0-0" .Capabilities.KubeVersion.GitVersion }}
-  image: quay.io/k8scsi/csi-snapshotter:v2.1.0
-  {{- else }}
-  image: quay.io/k8scsi/csi-snapshotter:v1.2.2
-  {{- end }}
-  {{- end }}
+  image: {{ .Values.controller.externalSnapshotter.image }}
   args:
   - --v=5
   - --leader-election
-  - --csi-address=/csi-data/csi.sock
+  - --leader-election-namespace={{ .Release.Namespace }}
   - --timeout=90s
+  - --worker-threads=10
+  - --csi-address=/csi-data/csi.sock
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
@@ -107,6 +104,9 @@ Create chart name and version as used by the chart label.
 - apiGroups: ['']
   resources: ['secrets']
   verbs: ['get', 'list']
+- apiGroups: ['']
+  resources: ['pods']
+  verbs: ['get', 'list', 'watch']
 - apiGroups: ['']
   resources: ['persistentvolumeclaims']
   verbs: ['get', 'list', 'watch', 'update', 'patch']

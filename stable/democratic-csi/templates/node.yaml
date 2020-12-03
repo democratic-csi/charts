@@ -20,7 +20,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if not .Values.driver.existingConfigSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/driver-config-secret.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -50,6 +52,9 @@ spec:
       {{- if .Values.node.driver.enabled }}
       - name: csi-driver
         image: {{ .Values.node.driver.image }}
+        {{- if .Values.node.driver.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.node.driver.imagePullPolicy }}
+        {{- end }}
         {{- if .Values.node.driver.lifecycle }}
         lifecycle:
 {{ toYaml .Values.node.driver.lifecycle | indent 10 }}
@@ -224,7 +229,11 @@ spec:
           type: Directory
       - name: config
         secret:
+          {{- if .Values.driver.existingConfigSecret }}
+          secretName: {{ .Values.driver.existingConfigSecret }}
+          {{- else }}
           secretName: {{ include "democratic-csi.fullname" . }}-driver-config
+          {{- end }}
 {{- if .Values.node.extraVolumes }}
 {{ toYaml .Values.node.extraVolumes | indent 6 }}
 {{- end }}
