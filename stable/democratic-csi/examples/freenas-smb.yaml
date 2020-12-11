@@ -1,10 +1,10 @@
 csiDriver:
   # should be globally unique for a given cluster
-  name: "org.democratic-csi.iscsi"
+  name: "org.democratic-csi.smb"
 
 # add note here about volume expansion requirements
 storageClasses:
-- name: freenas-iscsi-csi
+- name: freenas-smb-csi
   defaultClass: false
   reclaimPolicy: Delete
   volumeBindingMode: Immediate
@@ -12,7 +12,8 @@ storageClasses:
   parameters:
     # for block-based storage can be ext3, ext4, xfs
     # for nfs should be nfs
-    fsType: ext4
+    # for smb should cifs
+    fsType: cifs
       
     # if true, volumes created from other snapshots will be
     # zfs send/received instead of zfs cloned
@@ -22,17 +23,22 @@ storageClasses:
     # zfs send/received instead of zfs cloned
     # detachedVolumesFromVolumes: "false"
 
-  mountOptions: []
+  mountOptions:
+  # can put these here or can be added to the node-stage-secret below
+  - username=foo
+  - password=bar
+  #- guest
   secrets:
     provisioner-secret:
     controller-publish-secret:
     node-stage-secret:
+    #  mount_flags: "username=foo,password=bar"
     node-publish-secret:
     controller-expand-secret:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []
-#- name: freenas-iscsi-csi
+#- name: freenas-smb-csi
 #  parameters:
 #  # if true, snapshots will be created with zfs send/receive
 #  # detachedSnapshots: "false"
@@ -44,6 +50,5 @@ driver:
     # please see the most up-to-date example of the corresponding config here:
     # https://github.com/democratic-csi/democratic-csi/tree/master/examples
     # YOU MUST COPY THE DATA HERE INLINE!
-    driver: freenas-iscsi
+    driver: freenas-smb
     #...
-    

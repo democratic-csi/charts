@@ -4,7 +4,7 @@ csiDriver:
 
 # add note here about volume expansion requirements
 storageClasses:
-- name: freenas-iscsi-csi
+- name: zfs-generic-iscsi-csi
   defaultClass: false
   reclaimPolicy: Delete
   volumeBindingMode: Immediate
@@ -32,7 +32,7 @@ storageClasses:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []
-#- name: freenas-iscsi-csi
+#- name: zfs-generic-iscsi-csi
 #  parameters:
 #  # if true, snapshots will be created with zfs send/receive
 #  # detachedSnapshots: "false"
@@ -44,6 +44,6 @@ driver:
     # please see the most up-to-date example of the corresponding config here:
     # https://github.com/democratic-csi/democratic-csi/tree/master/examples
     # YOU MUST COPY THE DATA HERE INLINE!
-    driver: freenas-iscsi
+    driver: zfs-generic-iscsi
     #...
     

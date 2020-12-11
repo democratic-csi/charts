@@ -43,40 +43,8 @@ volumeSnapshotClasses: []
 
 driver:
   config:
+    # please see the most up-to-date example of the corresponding config here:
+    # https://github.com/democratic-csi/democratic-csi/tree/master/examples
+    # YOU MUST COPY THE DATA HERE INLINE!
     driver: freenas-nfs
-    instance_id:
-    httpConnection:
-      protocol: http
-      host: server address
-      port: 80
-      username: root
-      password:
-      allowInsecure: true
-    sshConnection:
-      host: server address
-      port: 22
-      username: root
-      # use either password or key
-      password: ""
-      privateKey: |
-        -----BEGIN RSA PRIVATE KEY-----
-        ...
-        -----END RSA PRIVATE KEY-----
-    zfs:
-      datasetParentName: tank/k8s/a/vols
-      detachedSnapshotsDatasetParentName: tank/k8s/a/snaps
-      datasetEnableQuotas: true
-      datasetEnableReservation: false
-      datasetPermissionsMode: "0777"
-      datasetPermissionsUser: root
-      datasetPermissionsGroup: wheel
-    nfs:
-      shareHost: server address
-      shareAlldirs: false
-      shareAllowedHosts: []
-      shareAllowedNetworks: []
-      shareMaprootUser: root
-      shareMaprootGroup: wheel
-      shareMapallUser: ""
-      shareMapallGroup: ""
-
+    #...

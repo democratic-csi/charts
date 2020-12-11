@@ -1,10 +1,10 @@
 csiDriver:
   # should be globally unique for a given cluster
-  name: "org.democratic-csi.iscsi"
+  name: "org.democratic-csi.nfs"
 
 # add note here about volume expansion requirements
 storageClasses:
-- name: freenas-iscsi-csi
+- name: zfs-generic-nfs-csi
   defaultClass: false
   reclaimPolicy: Delete
   volumeBindingMode: Immediate
@@ -12,7 +12,7 @@ storageClasses:
   parameters:
     # for block-based storage can be ext3, ext4, xfs
     # for nfs should be nfs
-    fsType: ext4
+    fsType: nfs
       
     # if true, volumes created from other snapshots will be
     # zfs send/received instead of zfs cloned
@@ -22,7 +22,9 @@ storageClasses:
     # zfs send/received instead of zfs cloned
     # detachedVolumesFromVolumes: "false"
 
-  mountOptions: []
+  mountOptions:
+  - noatime
+  - nfsvers=3
   secrets:
     provisioner-secret:
     controller-publish-secret:
@@ -32,7 +34,7 @@ storageClasses:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []
-#- name: freenas-iscsi-csi
+#- name: zfs-generic-nfs-csi
 #  parameters:
 #  # if true, snapshots will be created with zfs send/receive
 #  # detachedSnapshots: "false"
@@ -44,6 +46,5 @@ driver:
     # please see the most up-to-date example of the corresponding config here:
     # https://github.com/democratic-csi/democratic-csi/tree/master/examples
     # YOU MUST COPY THE DATA HERE INLINE!
-    driver: freenas-iscsi
+    driver: zfs-generic-nfs
     #...
-    

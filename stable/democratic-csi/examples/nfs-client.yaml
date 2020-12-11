@@ -31,20 +31,11 @@ volumeSnapshotClasses: []
 
 driver:
   config:
-    #driver: 
-    # rest of per-driver config data/syntax
+    # please see the most up-to-date example of the corresponding config here:
+    # https://github.com/democratic-csi/democratic-csi/tree/master/examples
+    # YOU MUST COPY THE DATA HERE INLINE!
     driver: nfs-client
-    instance_id:
-    nfs:
-      # make note of these 3, they are used below in various places
-      shareHost: <IP or host>
-      shareBasePath: "/some/path/to/nfs-client/storage"
-      controllerBasePath: "/nfs-storage"
-
-      dirPermissionsMode: "0777"
-      dirPermissionsUser: root
-      dirPermissionsGroup: root
-
+    #...
 
 # There are 4 different approaches to installing the driver
 # 1: Run the controller service separated from the node service, mount the base share into the controller pod at run time
