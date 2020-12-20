@@ -35,6 +35,13 @@ rules:
     resources: ["volumeattachments"]
     verbs: ["get", "list", "watch", "update"]
 
+{{- if .Values.node.rbac.openshift.privileged }}
+  - apiGroups: ["security.openshift.io"]
+    resources: ["securitycontextconstraints"]
+    resourceNames: ["privileged"]
+    verbs: ["use"]
+{{- end }}
+
 {{- if and .Values.controller.enabled .Values.controller.rbac.enabled (eq .Values.controller.strategy "node") }}
 {{ include "democratic-csi.controller-rbac-rules" . | indent 2 }}
 {{- end }}

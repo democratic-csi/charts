@@ -30,6 +30,10 @@ csiDriver:
 controller:
   rbac:
     enabled: true
+    openshift:
+      # set to true if running on openshift *and* you have need
+      # ie: hostNetwork, hostIPC, etc are turned on
+      privileged: false
   replicaCount: 1
   enabled: true
   hostNetwork: false
@@ -102,6 +106,9 @@ controller:
 node:
   rbac:
     enabled: true
+    openshift:
+      # set to true if running on openshift
+      privileged: false
   enabled: true
   hostNetwork: true
   hostIPC: true
@@ -116,7 +123,8 @@ node:
     image: democraticcsi/democratic-csi:latest
     # imagePullPolicy: Always
     logLevel: info
-    # set path to null if your OS has no localtime file (e.g. for RancherOS)
+    # set path to null if your OS has no localtime file
+    # RancherOS, openshift, etc 
     localtimeHostPath: /etc/localtime
     lifecycle:
 #      postStart:

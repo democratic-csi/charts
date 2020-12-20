@@ -149,5 +149,13 @@ Create chart name and version as used by the chart label.
 - apiGroups: ["coordination.k8s.io"]
   resources: ["leases"]
   verbs: ["get", "watch", "list", "delete", "update", "create"]
+
+{{- if .Values.controller.rbac.openshift.privileged }}
+- apiGroups: ["security.openshift.io"]
+  resources: ["securitycontextconstraints"]
+  resourceNames: ["privileged"]
+  verbs: ["use"]
+{{- end }}
+
 {{- end -}}
 
