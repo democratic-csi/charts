@@ -1,3 +1,11 @@
+# 0.6.2
+
+- arm friendly busybox image
+
+# 0.6.1
+
+- support for openshift privileged
+
 # 0.6.0
 
 - update various sidecar images

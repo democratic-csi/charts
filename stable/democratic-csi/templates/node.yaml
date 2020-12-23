@@ -158,7 +158,7 @@ spec:
           mountPath: /registration
 
       - name: cleanup
-        image: gcr.io/google_containers/busybox:1.24
+        image: docker.io/busybox:1.32.0
         command:
           - "/bin/sh"
           - "-c"
