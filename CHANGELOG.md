@@ -1,3 +1,7 @@
+# 0.6.3
+
+- api version support for csidriver
+
 # 0.6.2
 
 - arm friendly busybox image
