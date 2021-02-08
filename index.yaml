@@ -3,6 +3,15 @@ entries:
   democratic-csi:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2021-02-08T05:18:58.840462011Z"
+    description: csi storage for container orchestration systems
+    digest: 8a6a6b4ee409ef6c56f0cb7089a888b8dd7f5d33257594ec370ca0410e7c3118
+    name: democratic-csi
+    urls:
+    - https://github.com/democratic-csi/charts/releases/download/democratic-csi-0.7.0/democratic-csi-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2020-12-23T06:48:01.964040832Z"
     description: csi storage for container orchestration systems
     digest: 6a40dd3e1d1c7b65b05f82fd2c397389b4dd756adf0940dfb7625fb29ac32629
