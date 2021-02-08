@@ -1,4 +1,5 @@
 {{- if .Values.node.enabled -}}
+{{- $root := . -}}
 {{- $controllerStrategy := "node" -}}
 {{- $mountIscsi := include "democratic-csi.mount-iscsi" . | eq "true" }}
 ---
@@ -37,6 +38,10 @@ spec:
       hostIPC: {{ .Values.node.hostIPC }}
       containers:
 
+      {{- if and .Values.controller.externalAttacher.enabled (eq .Values.controller.strategy $controllerStrategy) }}
+{{ include "democratic-csi.external-attacher-container" . | indent 6 }}
+      {{- end }}
+
       {{- if and .Values.controller.enabled .Values.controller.externalProvisioner.enabled (eq .Values.controller.strategy $controllerStrategy) }}
 {{ include "democratic-csi.external-provisioner-container" . | indent 6 }}
       {{- end }}
@@ -47,6 +52,27 @@ spec:
 
       {{- if and .Values.controller.enabled .Values.controller.externalSnapshotter.enabled (eq .Values.controller.strategy $controllerStrategy) }}
 {{ include "democratic-csi.external-snapshotter-container" . | indent 6 }}
+      {{- end }}
+
+      {{- if and .Values.controller.externalHealthMonitorController.enabled (eq .Values.controller.strategy $controllerStrategy) }}
+{{ include "democratic-csi.external-health-monitor-controller" . | indent 6 }}
+      {{- end }}
+
+      {{- if .Values.node.externalHealthMonitorAgent.enabled }}
+      - name: external-health-monitor-agent
+        image: {{ .Values.node.externalHealthMonitorAgent.image }}
+        args:
+        {{- range .Values.node.externalHealthMonitorAgent.args }}
+        - {{ tpl . $root }}
+        {{- end }}
+        {{- range .Values.node.externalHealthMonitorAgent.extraArgs }}
+        - {{ tpl . $root }}
+        {{- end }}
+        volumeMounts:
+        - mountPath: /csi-data
+          name: socket-dir
+        - name: kubelet-dir
+          mountPath: /var/lib/kubelet
       {{- end }}
 
       {{- if .Values.node.driver.enabled }}
@@ -103,7 +129,7 @@ spec:
         volumeMounts:
         - name: socket-dir
           mountPath: /csi-data
-        - name: mountpoint-dir
+        - name: kubelet-dir
           mountPath: {{ .Values.node.kubeletHostPath }}
           mountPropagation: Bidirectional
         {{- if $mountIscsi }}
@@ -142,9 +168,12 @@ spec:
       - name: driver-registrar
         image: {{ .Values.node.driverRegistrar.image }}
         args:
-        - --v=5
-        - --csi-address=/csi-data/csi.sock
-        - --kubelet-registration-path={{ .Values.node.kubeletHostPath }}/plugins/{{ .Values.csiDriver.name }}/csi.sock
+        {{- range .Values.node.driverRegistrar.args }}
+        - {{ tpl . $root }}
+        {{- end }}
+        {{- range .Values.node.driverRegistrar.extraArgs }}
+        - {{ tpl . $root }}
+        {{- end }}
         env:
         - name: KUBE_NODE_NAME
           valueFrom:
@@ -191,7 +220,7 @@ spec:
         hostPath:
           path: {{ .Values.node.kubeletHostPath }}/plugins_registry
           type: Directory
-      - name: mountpoint-dir
+      - name: kubelet-dir
         hostPath:
           path: {{ .Values.node.kubeletHostPath }}
           type: Directory

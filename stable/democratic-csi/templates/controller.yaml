@@ -35,6 +35,10 @@ spec:
       hostIPC: {{ .Values.controller.hostIPC }}
       containers:
 
+      {{- if and .Values.controller.externalAttacher.enabled (eq .Values.controller.strategy $controllerStrategy) }}
+{{ include "democratic-csi.external-attacher-container" . | indent 6 }}
+      {{- end }}
+
       {{- if and .Values.controller.externalProvisioner.enabled (eq .Values.controller.strategy $controllerStrategy) }}
 {{ include "democratic-csi.external-provisioner-container" . | indent 6 }}
       {{- end }}
@@ -45,6 +49,10 @@ spec:
 
       {{- if and .Values.controller.externalSnapshotter.enabled (eq .Values.controller.strategy $controllerStrategy) }}
 {{ include "democratic-csi.external-snapshotter-container" . | indent 6 }}
+      {{- end }}
+
+      {{- if and .Values.controller.externalHealthMonitorController.enabled (eq .Values.controller.strategy $controllerStrategy) }}
+{{ include "democratic-csi.external-health-monitor-controller" . | indent 6 }}
       {{- end }}
 
       {{- if .Values.controller.driver.enabled }}

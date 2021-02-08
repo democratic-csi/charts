@@ -16,6 +16,11 @@ metadata:
 spec:
   attachRequired: {{ .Values.csiDriver.attachRequired }}
   podInfoOnMount: {{ .Values.csiDriver.podInfoOnMount }}
+  {{- if semverCompare ">=1.19.0-0" .Capabilities.KubeVersion.GitVersion }}
+  {{- if .Values.csiDriver.fsGroupPolicy }}
+  fsGroupPolicy: {{ .Values.csiDriver.fsGroupPolicy }}
+  {{- end }}
+  {{- end }}
   #  added in Kubernetes 1.16
   #  volumeLifecycleModes:
   #  - Persistent
@@ -24,6 +29,19 @@ spec:
   {{- if .Values.csiDriver.volumeLifecycleModes }}
   volumeLifecycleModes:
 {{ toYaml .Values.csiDriver.volumeLifecycleModes | indent 2 }}
+  {{- end }}
+  {{- end }}
+
+  {{- if semverCompare ">=1.20.0-0" .Capabilities.KubeVersion.GitVersion }}
+  {{- if .Values.csiDriver.tokenRequests }}
+  tokenRequests:
+{{ toYaml .Values.csiDriver.tokenRequests | indent 2 }}
+  {{- end }}
+  {{- end }}
+
+  {{- if semverCompare ">=1.20.0-0" .Capabilities.KubeVersion.GitVersion }}
+  {{- if or (eq ( .Values.csiDriver.requiresRepublish | toString ) "false") (eq ( .Values.csiDriver.requiresRepublish | toString ) "true") }}
+  requiresRepublish: {{ .Values.csiDriver.requiresRepublish }}
   {{- end }}
   {{- end }}
 

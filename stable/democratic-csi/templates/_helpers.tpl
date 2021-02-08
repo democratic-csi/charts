@@ -40,18 +40,35 @@ Create chart name and version as used by the chart label.
 {{- end }}
 {{- end -}}
 
+{{- define "democratic-csi.external-attacher-container" -}}
+{{- $root := . -}}
+# https://github.com/kubernetes-csi/external-attacher
+- name: external-attacher
+  image: {{ .Values.controller.externalAttacher.image }}
+  args:
+  {{- range .Values.controller.externalAttacher.args }}
+  - {{ tpl . $root }}
+  {{- end }}
+  {{- range .Values.controller.externalAttacher.extraArgs }}
+  - {{ tpl . $root }}
+  {{- end }}
+  volumeMounts:
+  - mountPath: /csi-data
+    name: socket-dir
+{{- end -}}
+
 {{- define "democratic-csi.external-provisioner-container" -}}
+{{- $root := . -}}
 # https://github.com/kubernetes-csi/external-provisioner
 - name: external-provisioner
   image: {{ .Values.controller.externalProvisioner.image }}
   args:
-  - --v=5
-  - --leader-election
-  - --leader-election-namespace={{ .Release.Namespace }}
-  - --timeout=90s
-  - --worker-threads=10
-  - --extra-create-metadata
-  - --csi-address=/csi-data/csi.sock
+  {{- range .Values.controller.externalProvisioner.args }}
+  - {{ tpl . $root }}
+  {{- end }}
+  {{- range .Values.controller.externalProvisioner.extraArgs }}
+  - {{ tpl . $root }}
+  {{- end }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
@@ -59,22 +76,24 @@ Create chart name and version as used by the chart label.
 
 
 {{- define "democratic-csi.external-resizer-container" -}}
+{{- $root := . -}}
 # https://github.com/kubernetes-csi/external-resizer
 - name: external-resizer
   image: {{ .Values.controller.externalResizer.image }}
   args:
-  - --v=5
-  - --leader-election
-  - --leader-election-namespace={{ .Release.Namespace }}
-  - --timeout=90s
-  - --workers=10
-  - --csi-address=/csi-data/csi.sock
+  {{- range .Values.controller.externalResizer.args }}
+  - {{ tpl . $root }}
+  {{- end }}
+  {{- range .Values.controller.externalResizer.extraArgs }}
+  - {{ tpl . $root }}
+  {{- end }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
 {{- end -}}
 
 {{- define "democratic-csi.external-snapshotter-container" -}}
+{{- $root := . -}}
 # https://github.com/kubernetes-csi/external-snapshotter
 # beware upgrading version:
 #  - https://github.com/rook/rook/issues/4178
@@ -82,12 +101,29 @@ Create chart name and version as used by the chart label.
 - name: external-snapshotter
   image: {{ .Values.controller.externalSnapshotter.image }}
   args:
-  - --v=5
-  - --leader-election
-  - --leader-election-namespace={{ .Release.Namespace }}
-  - --timeout=90s
-  - --worker-threads=10
-  - --csi-address=/csi-data/csi.sock
+  {{- range .Values.controller.externalSnapshotter.args }}
+  - {{ tpl . $root }}
+  {{- end }}
+  {{- range .Values.controller.externalSnapshotter.extraArgs }}
+  - {{ tpl . $root }}
+  {{- end }}
+  volumeMounts:
+  - mountPath: /csi-data
+    name: socket-dir
+{{- end -}}
+
+{{- define "democratic-csi.external-health-monitor-controller" -}}
+{{- $root := . -}}
+# https://github.com/kubernetes-csi/external-health-monitor
+- name: external-health-monitor-controller
+  image: {{ .Values.controller.externalHealthMonitorController.image }}
+  args:
+  {{- range .Values.controller.externalHealthMonitorController.args }}
+  - {{ tpl . $root }}
+  {{- end }}
+  {{- range .Values.controller.externalHealthMonitorController.extraArgs }}
+  - {{ tpl . $root }}
+  {{- end }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
@@ -118,7 +154,10 @@ Create chart name and version as used by the chart label.
   verbs: ['get', 'list', 'watch']
 - apiGroups: ['storage.k8s.io']
   resources: ['volumeattachments']
-  verbs: ['get', 'list', 'watch', 'update']
+  verbs: ['get', 'list', 'watch', 'update', 'patch']
+- apiGroups: ["storage.k8s.io"]
+  resources: ["volumeattachments/status"]
+  verbs: ["patch"]
 - apiGroups: ['storage.k8s.io']
   resources: ['storageclasses']
   verbs: ['get', 'list', 'watch']
@@ -143,13 +182,15 @@ Create chart name and version as used by the chart label.
 - apiGroups: ["snapshot.storage.k8s.io"]
   resources: ["volumesnapshots"]
   verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+- apiGroups: ["storage.k8s.io"]
+  resources: ["csinodes"]
+  verbs: ["get", "list", "watch"]
 - apiGroups: ["csi.storage.k8s.io"]
   resources: ["csinodeinfos"]
   verbs: ["get", "list", "watch"]
 - apiGroups: ["coordination.k8s.io"]
   resources: ["leases"]
   verbs: ["get", "watch", "list", "delete", "update", "create"]
-
 {{- if .Values.controller.rbac.openshift.privileged }}
 - apiGroups: ["security.openshift.io"]
   resources: ["securitycontextconstraints"]
