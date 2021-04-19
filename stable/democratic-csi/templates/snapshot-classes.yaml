@@ -14,7 +14,14 @@ apiVersion: snapshot.storage.k8s.io/v1alpha1
 kind: VolumeSnapshotClass
 metadata:
   name: {{ required "snapshot class name is required" $classRoot.name }}
+  annotations:
+    {{- with $classRoot.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
+    {{- with $classRoot.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
     app.kubernetes.io/name: {{ include "democratic-csi.name" $root }}
     helm.sh/chart: {{ include "democratic-csi.chart" $root }}
     app.kubernetes.io/instance: {{ $root.Release.Name }}

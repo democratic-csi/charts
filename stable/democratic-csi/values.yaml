@@ -253,6 +253,8 @@ node:
 # add note here about volume expansion requirements
 storageClasses: []
 #- name:
+#  annotations: {}
+#  labels: {}
 #  defaultClass: false
 #  reclaimPolicy: Delete
 #  volumeBindingMode: Immediate
@@ -280,6 +282,8 @@ storageClasses: []
 
 volumeSnapshotClasses: []
 #- name:
+#  annotations: {}
+#  labels: {}
 #  deletionPolicy: Delete | Retain
 #  parameters:
 #  secrets:
