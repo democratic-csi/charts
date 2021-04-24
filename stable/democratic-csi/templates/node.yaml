@@ -95,7 +95,6 @@ spec:
         - --csi-mode=controller
         {{- end }}
         - --server-socket=/csi-data/csi.sock
-        imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:

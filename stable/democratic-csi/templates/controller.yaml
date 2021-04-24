@@ -76,7 +76,6 @@ spec:
         - --log-level={{ .Values.controller.driver.logLevel }}
         - --csi-mode=controller
         - --server-socket=/csi-data/csi.sock
-        imagePullPolicy: Always
 
         {{- if .Values.controller.livenessProbe.enabled }}
         livenessProbe:
