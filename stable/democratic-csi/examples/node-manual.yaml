@@ -1,0 +1,14 @@
+# driver only works with 1.16+
+csiDriver:
+  # should be globally unique for a given cluster
+  name: "org.democratic-csi.node-manual"
+
+controller:
+  enabled: false
+
+driver:
+  config:
+    #driver: 
+    # rest of per-driver config data/syntax
+    driver: node-manual
+
