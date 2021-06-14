@@ -21,10 +21,16 @@ spec:
   template:
     metadata:
       annotations:
+        {{- with .Values.node.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- if not .Values.driver.existingConfigSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/driver-config-secret.yaml") . | sha256sum }}
         {{- end }}
       labels:
+        {{- with .Values.node.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/csi-role: "node"

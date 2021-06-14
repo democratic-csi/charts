@@ -54,6 +54,8 @@ controller:
   enabled: true
   hostNetwork: false
   hostIPC: false
+  podAnnotations: {}
+  podLabels: {}
   
   # deployment = deploy controller parts in a distinct deployment
   # node       = deploy controller as sidecars with node daemonset
@@ -145,7 +147,7 @@ controller:
   # democratic-csi controller
   driver:
     enabled: true
-    image: democraticcsi/democratic-csi:latest
+    image: docker.io/democraticcsi/democratic-csi:latest
     # imagePullPolicy: Always
     logLevel: info
     lifecycle:
@@ -189,6 +191,8 @@ node:
   hostNetwork: true
   hostIPC: true
   kubeletHostPath: /var/lib/kubelet
+  podAnnotations: {}
+  podLabels: {}
 
   livenessProbe:
     enabled: true
@@ -209,7 +213,7 @@ node:
   # democratic-csi node
   driver:
     enabled: true
-    image: democraticcsi/democratic-csi:latest
+    image: docker.io/democraticcsi/democratic-csi:latest
     # imagePullPolicy: Always
     logLevel: info
     # set path to null if your OS has no localtime file

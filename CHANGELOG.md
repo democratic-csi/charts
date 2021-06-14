@@ -1,3 +1,8 @@
+# 0.8.2
+
+- support for pod annotations/labels
+- explicit registry (docker.io) for relevant images
+
 # 0.6.3
 
 - api version support for csidriver
