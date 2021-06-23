@@ -53,6 +53,7 @@ controller:
   replicaCount: 1
   enabled: true
   hostNetwork: false
+  hostAliases: []
   hostIPC: false
   podAnnotations: {}
   podLabels: {}
@@ -165,6 +166,7 @@ controller:
 #        - SYS_ADMIN
 #      privileged: true
 
+    extraEnv: []
     extraVolumeMounts: []
 #    - name: foo
 #      mountPath: /foo
@@ -189,6 +191,7 @@ node:
       privileged: false
   enabled: true
   hostNetwork: true
+  hostAliases: []
   hostIPC: true
   kubeletHostPath: /var/lib/kubelet
   podAnnotations: {}
@@ -227,6 +230,7 @@ node:
 #        exec:
 #          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
 
+    extraEnv: []
     extraVolumeMounts: []
 #    - name: foo
 #      mountPath: /foo

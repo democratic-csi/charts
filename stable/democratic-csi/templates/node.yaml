@@ -40,6 +40,7 @@ spec:
       {{- end }}
       # Required by iSCSI
       hostNetwork: {{ .Values.node.hostNetwork }}
+      hostAliases: {{ .Values.node.hostAliases }}
       # Required by multipath detach
       hostIPC: {{ .Values.node.hostIPC }}
       containers:
@@ -113,6 +114,10 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
+
+{{- if .Values.node.driver.extraEnv }}
+{{ toYaml .Values.node.driver.extraEnv | indent 8 }}
+{{- end }}
 
         # prevent crazy error messages due to the /dev host mount
         terminationMessagePath: /tmp/termination-log

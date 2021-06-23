@@ -38,6 +38,7 @@ spec:
       serviceAccount: {{ include "democratic-csi.fullname" . }}-controller-sa
       {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
+      hostAliases: {{ .Values.controller.hostAliases }}
       hostIPC: {{ .Values.controller.hostIPC }}
       containers:
 
@@ -82,6 +83,11 @@ spec:
         - --log-level={{ .Values.controller.driver.logLevel }}
         - --csi-mode=controller
         - --server-socket=/csi-data/csi.sock
+
+        env:
+{{- if .Values.controller.driver.extraEnv }}
+{{ toYaml .Values.controller.driver.extraEnv | indent 8 }}
+{{- end }}
 
         {{- if .Values.controller.livenessProbe.enabled }}
         livenessProbe:
