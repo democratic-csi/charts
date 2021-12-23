@@ -1,3 +1,11 @@
+# 0.9.0
+
+- minimum k8s version now 1.20
+- csi version defaults to 1.5.0
+- support for trusting custom CA certficates
+- bumps the sidecars
+- remove support for deprecated `external-health-monitor-agent`
+
 # 0.8.2
 
 - support for pod annotations/labels

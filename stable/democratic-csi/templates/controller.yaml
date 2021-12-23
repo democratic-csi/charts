@@ -26,6 +26,7 @@ spec:
         {{- if not .Values.driver.existingConfigSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/driver-config-secret.yaml") . | sha256sum }}
         {{- end }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         {{- with .Values.controller.podLabels }}
         {{- toYaml . | nindent 8 }}
@@ -85,6 +86,8 @@ spec:
         - --server-socket=/csi-data/csi.sock
 
         env:
+        - name: NODE_EXTRA_CA_CERTS
+          value: "/tmp/certs/extra-ca-certs.crt"
 {{- if .Values.controller.driver.extraEnv }}
 {{ toYaml .Values.controller.driver.extraEnv | indent 8 }}
 {{- end }}
@@ -106,6 +109,8 @@ spec:
           mountPath: /csi-data
         - name: config
           mountPath: /config
+        - name: extra-ca-certs
+          mountPath: /tmp/certs
 {{- if .Values.controller.driver.extraVolumeMounts }}
 {{ toYaml .Values.controller.driver.extraVolumeMounts | indent 8 }}
 {{- end }}
@@ -121,6 +126,12 @@ spec:
           {{- else }}
           secretName: {{ include "democratic-csi.fullname" . }}-driver-config
           {{- end }}
+      - name: extra-ca-certs
+        configMap:
+          name: {{ include "democratic-csi.fullname" . }}
+          items:
+          - key: extra-ca-certs
+            path: extra-ca-certs.crt
 {{- if .Values.controller.extraVolumes }}
 {{ toYaml .Values.controller.extraVolumes | indent 6 }}
 {{- end }}

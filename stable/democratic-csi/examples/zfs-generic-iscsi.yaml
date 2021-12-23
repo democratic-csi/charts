@@ -55,4 +55,3 @@ driver:
     # YOU MUST COPY THE DATA HERE INLINE!
     driver: zfs-generic-iscsi
     #...
-    

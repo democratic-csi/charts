@@ -1,0 +1,45 @@
+csiDriver:
+  # should be globally unique for a given cluster
+  name: "org.democratic-csi.iscsi-synology"
+
+# add note here about volume expansion requirements
+storageClasses:
+- name: synology-iscsi
+  defaultClass: false
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  allowVolumeExpansion: true
+  parameters:
+    # for block-based storage can be ext3, ext4, xfs
+    # for nfs should be nfs
+    fsType: ext4
+
+  mountOptions: []
+  secrets:
+    provisioner-secret:
+    controller-publish-secret:
+    node-stage-secret:
+    node-publish-secret:
+    controller-expand-secret:
+
+volumeSnapshotClasses:
+- name: synology-iscsi
+  parameters:
+  secrets:
+    snapshotter-secret:
+
+
+controller:
+  externalResizer:
+    enabled: true
+
+  externalSnapshotter:
+    enabled: true
+
+driver:
+  config:
+    # please see the most up-to-date example of the corresponding config here:
+    # https://github.com/democratic-csi/democratic-csi/tree/master/examples
+    # YOU MUST COPY THE DATA HERE INLINE!
+    driver: synology-iscsi
+    #...

@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "democratic-csi.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
+    helm.sh/chart: {{ include "democratic-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  extra-ca-certs: {{ default "" .Values.extraCaCerts | quote }}

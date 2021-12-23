@@ -5,6 +5,15 @@
 nameOverride: ""
 fullnameOverride: ""
 
+extraCaCerts:
+#extraCaCerts: |-
+#  -----BEGIN CERTIFICATE-----
+#  ...
+#  -----END CERTIFICATE-----
+#  -----BEGIN CERTIFICATE-----
+#  ...
+#  -----END CERTIFICATE-----
+
 driver:
   # see the driver-config-secret.yaml for syntax
   # NOTE: if setting an existing secret you must still set `driver.config.driver`
@@ -20,7 +29,7 @@ driver:
 csiDriver:
   # should be globally unique for a given cluster
   name:
-  version: 1.2.0
+  version: 1.5.0
   # create the kubernetes CSIDriver
   enabled: true
   attachRequired: false
@@ -65,7 +74,7 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-attacher.html
   externalAttacher:
     enabled: false
-    image: k8s.gcr.io/sig-storage/csi-attacher:v3.1.0
+    image: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
     args:
     - --v=5
     - --leader-election
@@ -79,7 +88,7 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-provisioner.html
   externalProvisioner:
     enabled: true
-    image: k8s.gcr.io/sig-storage/csi-provisioner:v2.1.0
+    image: k8s.gcr.io/sig-storage/csi-provisioner:v3.0.0
     args:
     - --v=5
     - --leader-election
@@ -94,7 +103,7 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-resizer.html
   externalResizer:
     enabled: true
-    image: k8s.gcr.io/sig-storage/csi-resizer:v1.1.0
+    image: k8s.gcr.io/sig-storage/csi-resizer:v1.3.0
     args:
     - --v=5
     - --leader-election
@@ -110,7 +119,7 @@ controller:
     enabled: true
     # 1.20+ should use v4.0.0+
     # READ *before* updating from beta https://github.com/kubernetes-csi/external-snapshotter#usage
-    image: k8s.gcr.io/sig-storage/csi-snapshotter:v3.0.3
+    image: k8s.gcr.io/sig-storage/csi-snapshotter:v4.2.1
     args:
     - --v=5
     - --leader-election
@@ -124,7 +133,7 @@ controller:
   # https://github.com/kubernetes-csi/external-health-monitor
   externalHealthMonitorController:
     enabled: false
-    image: k8s.gcr.io/sig-storage/csi-external-health-monitor-controller:v0.2.0
+    image: k8s.gcr.io/sig-storage/csi-external-health-monitor-controller:v0.4.0
     args:
     - --v=5
     - --leader-election
@@ -200,19 +209,6 @@ node:
   livenessProbe:
     enabled: true
 
-  # https://github.com/kubernetes-csi/external-health-monitor
-  externalHealthMonitorAgent:
-    enabled: false
-    image: k8s.gcr.io/sig-storage/csi-external-health-monitor-agent:v0.2.0
-    args:
-    - --v=5
-    - --timeout=15s
-    - --worker-threads=10
-    - --csi-address=/csi-data/csi.sock
-    #- --kubelet-root-path={{ .Values.node.kubeletHostPath }}
-    # if you do not want to completely override the defaults use this
-    extraArgs: []
-
   # democratic-csi node
   driver:
     enabled: true
@@ -238,7 +234,7 @@ node:
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true
-    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.1.0
+    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.4.0
     args:
     - --v=5
     - --csi-address=/csi-data/csi.sock
