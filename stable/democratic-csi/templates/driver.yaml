@@ -45,4 +45,10 @@ spec:
   {{- end }}
   {{- end }}
 
+  {{- if semverCompare ">=1.19.0-0" .Capabilities.KubeVersion.GitVersion }}
+  {{- if or (eq ( .Values.csiDriver.storageCapacity | toString ) "false") (eq ( .Values.csiDriver.storageCapacity | toString ) "true") }}
+  storageCapacity: {{ .Values.csiDriver.storageCapacity }}
+  {{- end }}
+  {{- end }}
+
 {{- end }}

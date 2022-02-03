@@ -72,6 +72,22 @@ Create chart name and version as used by the chart label.
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  env:
+  - name: NODE_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: spec.nodeName
+  - name: NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  - name: POD_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
 {{- end -}}
 
 
@@ -178,7 +194,7 @@ Create chart name and version as used by the chart label.
   verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
 - apiGroups: ["snapshot.storage.k8s.io"]
   resources: ["volumesnapshotcontents/status"]
-  verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]  
+  verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
 - apiGroups: ["snapshot.storage.k8s.io"]
   resources: ["volumesnapshots"]
   verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
@@ -191,6 +207,16 @@ Create chart name and version as used by the chart label.
 - apiGroups: ["coordination.k8s.io"]
   resources: ["leases"]
   verbs: ["get", "watch", "list", "delete", "update", "create"]
+# capacity rbac
+- apiGroups: ["storage.k8s.io"]
+  resources: ["csistoragecapacities"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get"]
+- apiGroups: ["apps"]
+  resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
+  verbs: ["get"]
 {{- if .Values.controller.rbac.openshift.privileged }}
 - apiGroups: ["security.openshift.io"]
   resources: ["securitycontextconstraints"]

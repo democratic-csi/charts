@@ -1,0 +1,63 @@
+# driver only works with 1.16+
+csiDriver:
+  # should be globally unique for a given cluster
+  name: "org.democratic-csi.zfs-local-zvol"
+  storageCapacity: true
+
+storageClasses:
+- name: zfs-local-zvol
+  defaultClass: false
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+  # distributed support is not yet ready for expansion
+  allowVolumeExpansion: false
+  parameters:
+    fsType: xfs
+
+  mountOptions:
+  - noatime
+  secrets:
+    provisioner-secret:
+    controller-publish-secret:
+    node-stage-secret:
+    node-publish-secret:
+    controller-expand-secret:
+
+# if your cluster supports snapshots you may enable below
+volumeSnapshotClasses: []
+#- name: zfs-local-zvol
+#  secrets:
+#    snapshotter-secret:
+
+controller:
+  enabled: true
+  strategy: node
+  
+  externalProvisioner:
+    extraArgs:
+    - --leader-election=false
+    - --node-deployment=true
+    - --node-deployment-immediate-binding=false
+    - --feature-gates=Topology=true
+    - --strict-topology=true
+    - --enable-capacity=true
+    - --capacity-ownerref-level=1
+
+  # distributed support is not yet ready
+  externalResizer:
+    enabled: false
+  # distributed support is not yet ready
+  externalSnapshotter:
+    enabled: false
+    extraArgs:
+    - --node-deployment
+    # snapshot controller option
+    #- --enable-distributed-snapshotting=true
+
+driver:
+  config:
+    # please see the most up-to-date example of the corresponding config here:
+    # https://github.com/democratic-csi/democratic-csi/tree/master/examples
+    # YOU MUST COPY THE DATA HERE INLINE!
+    driver: zfs-local-zvol
+    #...
