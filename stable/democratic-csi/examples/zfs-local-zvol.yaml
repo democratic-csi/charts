@@ -3,6 +3,7 @@ csiDriver:
   # should be globally unique for a given cluster
   name: "org.democratic-csi.zfs-local-zvol"
   storageCapacity: true
+  fsGroupPolicy: File
 
 storageClasses:
 - name: zfs-local-zvol
