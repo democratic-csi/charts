@@ -22,8 +22,8 @@ controller:
   args:
   - "--v=5"
   - "--leader-election=true"
+  - "--enable-distributed-snapshotting"
   extraArgs: []
-  # - --enable-distributed-snapshotting
 
 validatingWebhook:
   enabled: false
