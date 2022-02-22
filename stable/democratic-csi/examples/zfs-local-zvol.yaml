@@ -47,13 +47,12 @@ controller:
   # distributed support is not yet ready
   externalResizer:
     enabled: false
-  # distributed support is not yet ready
+
   externalSnapshotter:
-    enabled: false
+    enabled: true
     extraArgs:
-    - --node-deployment
-    # snapshot controller option
-    #- --enable-distributed-snapshotting=true
+    - --leader-election=false
+    - --node-deployment=true
 
 driver:
   config:
