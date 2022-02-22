@@ -106,6 +106,22 @@ Create chart name and version as used by the chart label.
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  env:
+  - name: NODE_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: spec.nodeName
+  - name: NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  - name: POD_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
 {{- end -}}
 
 {{- define "democratic-csi.external-snapshotter-container" -}}
@@ -126,6 +142,22 @@ Create chart name and version as used by the chart label.
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  env:
+  - name: NODE_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: spec.nodeName
+  - name: NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  - name: POD_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
 {{- end -}}
 
 {{- define "democratic-csi.external-health-monitor-controller" -}}
