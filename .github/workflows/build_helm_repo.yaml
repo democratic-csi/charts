@@ -29,4 +29,4 @@ jobs:
           charts_dir: stable
         env:
           CR_TOKEN: "${{ secrets.ACCESS_TOKEN }}"
-
+          CR_SKIP_EXISTING: true
