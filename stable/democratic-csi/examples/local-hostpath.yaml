@@ -1,0 +1,73 @@
+# driver only works with 1.16+
+csiDriver:
+  # should be globally unique for a given cluster
+  name: "org.democratic-csi.local-hostpath"
+  storageCapacity: true
+  fsGroupPolicy: File
+
+storageClasses:
+- name: local-hostpath
+  defaultClass: false
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+  # distributed support is not yet ready for expansion
+  allowVolumeExpansion: false
+  parameters:
+
+  mountOptions: []
+  secrets:
+    provisioner-secret:
+    controller-publish-secret:
+    node-stage-secret:
+    node-publish-secret:
+    controller-expand-secret:
+
+# if your cluster supports snapshots you may enable below
+volumeSnapshotClasses: []
+#- name: local-hostpath
+#  secrets:
+#    snapshotter-secret:
+
+controller:
+  enabled: true
+  strategy: node
+  externalProvisioner:
+    extraArgs:
+    - --leader-election=false
+    - --node-deployment=true
+    - --node-deployment-immediate-binding=false
+    - --feature-gates=Topology=true
+    - --strict-topology=true
+    - --enable-capacity=true
+    - --capacity-ownerref-level=1
+
+  # distributed support is not yet ready
+  externalResizer:
+    enabled: false
+
+  externalSnapshotter:
+    enabled: true
+    extraArgs:
+    - --leader-election=false
+    - --node-deployment=true
+
+node:
+  driver:
+    extraVolumeMounts:
+    - name: local-storage
+      mountPath: /var/lib/csi-local-hostpath
+      mountPropagation: Bidirectional
+
+  extraVolumes:
+  - name: local-storage
+    hostPath:
+      path: /var/lib/csi-local-hostpath
+      type: DirectoryOrCreate
+
+driver:
+  config:
+    # please see the most up-to-date example of the corresponding config here:
+    # https://github.com/democratic-csi/democratic-csi/tree/master/examples
+    # YOU MUST COPY THE DATA HERE INLINE!
+    driver: local-hostpath
+    #...
