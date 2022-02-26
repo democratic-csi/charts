@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "democratic-csi.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
     helm.sh/chart: {{ include "democratic-csi.chart" . }}

@@ -5,6 +5,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ include "democratic-csi.fullname" . }}-node-sa
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
     helm.sh/chart: {{ include "democratic-csi.chart" . }}

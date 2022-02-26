@@ -7,6 +7,7 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: {{ include "democratic-csi.fullname" . }}-node
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
     helm.sh/chart: {{ include "democratic-csi.chart" . }}
