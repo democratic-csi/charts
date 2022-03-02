@@ -112,14 +112,14 @@ spec:
 
         {{- if .Values.node.livenessProbe.enabled }}
         livenessProbe:
-          failureThreshold: 5
+          failureThreshold: 3
           exec:
             command:
             - bin/liveness-probe
             - --csi-version={{ .Values.csiDriver.version }}
             - --csi-address=/csi-data/csi.sock
           initialDelaySeconds: 10
-          timeoutSeconds: 3
+          timeoutSeconds: 15
           periodSeconds: 60
         {{- end }}
 
