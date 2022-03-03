@@ -193,7 +193,7 @@ spec:
           - "-c"
           - "--"
         args: [ "while true; do sleep 2; done;" ]
-  
+
         lifecycle:
           # note this runs *before* other containers are terminated
           preStop:
@@ -228,7 +228,6 @@ spec:
       - name: iscsi-dir
         hostPath:
           path: /etc/iscsi
-          type: Directory
       - name: iscsi-info
         hostPath:
           path: /var/lib/iscsi
@@ -285,4 +284,3 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 {{- end }}
-
