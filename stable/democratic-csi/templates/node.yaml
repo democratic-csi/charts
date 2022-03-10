@@ -187,7 +187,7 @@ spec:
           mountPath: /registration
 
       - name: cleanup
-        image: docker.io/busybox:1.32.0
+        image: {{ .Values.node.cleanup.image }}
         command:
           - "/bin/sh"
           - "-c"

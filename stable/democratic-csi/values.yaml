@@ -212,6 +212,9 @@ node:
   livenessProbe:
     enabled: true
 
+  cleanup:
+    image: docker.io/busybox:1.32.0
+
   # democratic-csi node
   driver:
     enabled: true
