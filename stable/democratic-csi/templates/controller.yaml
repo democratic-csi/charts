@@ -104,7 +104,11 @@ spec:
             command:
             - bin/liveness-probe
             - --csi-version={{ .Values.csiDriver.version }}
-            - --csi-address=/csi-data/csi.sock
+            {{- if and .Values.csiProxy.enabled }}
+            - --server-socket=/csi-data/csi.sock.internal
+            {{- else }}
+            - --server-socket=/csi-data/csi.sock
+            {{- end }}
           initialDelaySeconds: 10
           timeoutSeconds: 15
           periodSeconds: 60
