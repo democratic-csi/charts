@@ -240,7 +240,7 @@ node:
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true
-    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.4.0
+    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.0
     args:
     - --v=5
     - --csi-address=/csi-data/csi.sock
@@ -299,3 +299,13 @@ volumeSnapshotClasses: []
 #  secrets:
 #    snapshotter-secret:
 
+# this is a temporary measure until all the k8s components are proper
+# grpc clients and send valid :authority headers
+# required to remove the deprecated/custom `grpc-uds` package with
+#`@grpc/grpc-js` and subsequently pave the way for updating `nodejs` to current
+# versions
+#
+# https://github.com/democratic-csi/csi-grpc-proxy
+csiProxy:
+  enabled: true
+  image: docker.io/democraticcsi/csi-grpc-proxy:v0.1.0

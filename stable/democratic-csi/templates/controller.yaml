@@ -84,7 +84,11 @@ spec:
         - --driver-config-file=/config/driver-config-file.yaml
         - --log-level={{ .Values.controller.driver.logLevel }}
         - --csi-mode=controller
+        {{- if and .Values.csiProxy.enabled }}
+        - --server-socket=/csi-data/csi.sock.internal
+        {{- else }}
         - --server-socket=/csi-data/csi.sock
+        {{- end }}
 
         env:
         - name: NODE_EXTRA_CA_CERTS
@@ -116,7 +120,11 @@ spec:
 {{ toYaml .Values.controller.driver.extraVolumeMounts | indent 8 }}
 {{- end }}
       {{- end }}
-          
+
+      {{- if .Values.csiProxy.enabled }}
+{{ include "democratic-csi.csi-proxy" . | indent 6 }}
+      {{- end }}
+
       volumes:
       - name: socket-dir
         emptyDir: {}

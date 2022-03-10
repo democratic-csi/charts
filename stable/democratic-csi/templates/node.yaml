@@ -86,7 +86,12 @@ spec:
         {{- if and .Values.controller.enabled (eq .Values.controller.strategy $controllerStrategy) }}
         - --csi-mode=controller
         {{- end }}
+        {{- if and .Values.csiProxy.enabled }}
+        - --server-socket=/csi-data/csi.sock.internal
+        {{- else }}
         - --server-socket=/csi-data/csi.sock
+        {{- end }}
+
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:
@@ -164,6 +169,10 @@ spec:
 {{- end }}
       {{- end }}
 
+      {{- if .Values.csiProxy.enabled }}
+{{ include "democratic-csi.csi-proxy" . | indent 6 }}
+      {{- end }}
+
       {{- if .Values.node.driverRegistrar.enabled }}
       - name: driver-registrar
         image: {{ .Values.node.driverRegistrar.image }}
@@ -180,11 +189,21 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
+
+        livenessProbe:
+          exec:
+            command:
+            - /csi-node-driver-registrar
+            - --kubelet-registration-path={{ .Values.node.kubeletHostPath }}/plugins/{{ .Values.csiDriver.name }}/csi.sock
+            - --mode=kubelet-registration-probe
+
         volumeMounts:
         - mountPath: /csi-data
           name: socket-dir
         - name: registration-dir
           mountPath: /registration
+        - name: kubelet-dir
+          mountPath: {{ .Values.node.kubeletHostPath }}
 
       - name: cleanup
         image: {{ .Values.node.cleanup.image }}
