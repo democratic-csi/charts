@@ -186,13 +186,6 @@ Create chart name and version as used by the chart label.
     value: "unix:///csi-data/csi.sock"
   - name: PROXY_TO
     value: "unix:///csi-data/csi.sock.internal"
-  resources:
-    limits:
-      cpu: 10m
-      memory: 20Mi
-    requests:
-      cpu: 2m
-      memory: 12Mi
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
