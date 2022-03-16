@@ -308,4 +308,4 @@ volumeSnapshotClasses: []
 # https://github.com/democratic-csi/csi-grpc-proxy
 csiProxy:
   enabled: true
-  image: docker.io/democraticcsi/csi-grpc-proxy:v0.4.0
+  image: docker.io/democraticcsi/csi-grpc-proxy:v0.4.1
