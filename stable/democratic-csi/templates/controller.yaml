@@ -18,6 +18,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/csi-role: "controller"
   template:
     metadata:
       annotations:
