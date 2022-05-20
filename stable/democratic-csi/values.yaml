@@ -309,3 +309,6 @@ volumeSnapshotClasses: []
 csiProxy:
   enabled: true
   image: docker.io/democraticcsi/csi-grpc-proxy:v0.4.2
+
+# Configure a pod security policy to allow privileged pods
+enablePSP: false
