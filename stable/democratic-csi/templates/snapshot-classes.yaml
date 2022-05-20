@@ -4,9 +4,9 @@
 {{- range .Values.volumeSnapshotClasses }}
 {{- $classRoot := . -}}
 ---
-{{- if semverCompare ">=1.20.0-0" $root.Capabilities.KubeVersion.GitVersion }}
+{{- if semverCompare ">=1.20.0-0" $root.Capabilities.KubeVersion.Version }}
 apiVersion: snapshot.storage.k8s.io/v1
-{{- else if semverCompare ">=1.17.0-0" $root.Capabilities.KubeVersion.GitVersion }}
+{{- else if semverCompare ">=1.17.0-0" $root.Capabilities.KubeVersion.Version }}
 apiVersion: snapshot.storage.k8s.io/v1beta1
 {{- else }}
 apiVersion: snapshot.storage.k8s.io/v1alpha1
@@ -26,7 +26,7 @@ metadata:
     helm.sh/chart: {{ include "democratic-csi.chart" $root }}
     app.kubernetes.io/instance: {{ $root.Release.Name }}
     app.kubernetes.io/managed-by: {{ $root.Release.Service }}
-{{- if semverCompare ">=1.17.0-0" $root.Capabilities.KubeVersion.GitVersion }}
+{{- if semverCompare ">=1.17.0-0" $root.Capabilities.KubeVersion.Version }}
 driver: {{ $root.Values.csiDriver.name }}
 deletionPolicy: {{ $classRoot.deletionPolicy | default "Delete" }}
 {{- else }}
