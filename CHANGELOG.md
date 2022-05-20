@@ -1,4 +1,11 @@
-# 0.10.5
+# 0.12.0
+- include `app.kubernetes.io/csi-role` in matchLabels on Deployment and DaemonSet
+  - requires `helm uninstall` and `helm install` to upgrade from older versions
+
+# 0.11.2
+  - bump `csi-grpc-proxy` for multiarch support and memory fixes
+
+# 0.10.11
 
 - csiProxy support
 - bump `node-driver-registrar`
