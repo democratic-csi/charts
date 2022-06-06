@@ -84,7 +84,7 @@ controller:
     - --leader-election-namespace={{ .Release.Namespace }}
     - --timeout=90s
     - --worker-threads=10
-    - --csi-address=/csi-data/csi.sock
+    - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
 
@@ -99,7 +99,7 @@ controller:
     - --timeout=90s
     - --worker-threads=10
     - --extra-create-metadata
-    - --csi-address=/csi-data/csi.sock
+    - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
 
@@ -113,7 +113,7 @@ controller:
     - --leader-election-namespace={{ .Release.Namespace }}
     - --timeout=90s
     - --workers=10
-    - --csi-address=/csi-data/csi.sock
+    - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
 
@@ -129,7 +129,7 @@ controller:
     - --leader-election-namespace={{ .Release.Namespace }}
     - --timeout=90s
     - --worker-threads=10
-    - --csi-address=/csi-data/csi.sock
+    - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
 
@@ -143,7 +143,7 @@ controller:
     - --leader-election-namespace={{ .Release.Namespace }}
     - --timeout=90s
     - --worker-threads=10
-    - --csi-address=/csi-data/csi.sock
+    - --csi-address={{ .csiSocketAddress }}
     #- --enable-node-watcher
     #- --list-volumes-interval
     # if you do not want to completely override the defaults use this
@@ -196,6 +196,9 @@ controller:
   affinity: {}
 
 node:
+  # windows support
+  windows:
+    enabled: false
   rbac:
     enabled: true
     openshift:
@@ -240,10 +243,10 @@ node:
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true
-    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.0
+    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.1
     args:
     - --v=5
-    - --csi-address=/csi-data/csi.sock
+    - --csi-address={{ .csiSocketAddress }}
     - --kubelet-registration-path={{ .Values.node.kubeletHostPath }}/plugins/{{ .Values.csiDriver.name }}/csi.sock
     # if you do not want to completely override the defaults use this
     extraArgs: []
@@ -308,7 +311,7 @@ volumeSnapshotClasses: []
 # https://github.com/democratic-csi/csi-grpc-proxy
 csiProxy:
   enabled: true
-  image: docker.io/democraticcsi/csi-grpc-proxy:v0.4.2
+  image: docker.io/democraticcsi/csi-grpc-proxy:v0.5.3
 
 # Configure a pod security policy to allow privileged pods
 enablePSP: false

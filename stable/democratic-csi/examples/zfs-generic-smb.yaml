@@ -4,7 +4,7 @@ csiDriver:
 
 # add note here about volume expansion requirements
 storageClasses:
-- name: freenas-smb-csi
+- name: zfs-generic-smb-csi
   defaultClass: false
   reclaimPolicy: Delete
   volumeBindingMode: Immediate
@@ -52,5 +52,5 @@ driver:
     # please see the most up-to-date example of the corresponding config here:
     # https://github.com/democratic-csi/democratic-csi/tree/master/examples
     # YOU MUST COPY THE DATA HERE INLINE!
-    driver: freenas-smb
+    driver: zfs-generic-smb
     #...

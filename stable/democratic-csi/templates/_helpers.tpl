@@ -41,6 +41,9 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{- define "democratic-csi.external-attacher-container" -}}
+{{- $ := index . 0 }}
+{{- $windows := index . 2 }}
+{{- with index . 1 }}
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-attacher
 - name: external-attacher
@@ -52,12 +55,18 @@ Create chart name and version as used by the chart label.
   {{- range .Values.controller.externalAttacher.extraArgs }}
   - {{ tpl . $root }}
   {{- end }}
+  {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  {{- end }}
+{{- end -}}
 {{- end -}}
 
 {{- define "democratic-csi.external-provisioner-container" -}}
+{{- $ := index . 0 }}
+{{- $windows := index . 2 }}
+{{- with index . 1 }}
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-provisioner
 - name: external-provisioner
@@ -69,9 +78,11 @@ Create chart name and version as used by the chart label.
   {{- range .Values.controller.externalProvisioner.extraArgs }}
   - {{ tpl . $root }}
   {{- end }}
+  {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  {{- end }}
   env:
   - name: NODE_NAME
     valueFrom:
@@ -89,9 +100,12 @@ Create chart name and version as used by the chart label.
         apiVersion: v1
         fieldPath: metadata.name
 {{- end -}}
-
+{{- end -}}
 
 {{- define "democratic-csi.external-resizer-container" -}}
+{{- $ := index . 0 }}
+{{- $windows := index . 2 }}
+{{- with index . 1 }}
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-resizer
 - name: external-resizer
@@ -103,9 +117,11 @@ Create chart name and version as used by the chart label.
   {{- range .Values.controller.externalResizer.extraArgs }}
   - {{ tpl . $root }}
   {{- end }}
+  {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  {{- end }}
   env:
   - name: NODE_NAME
     valueFrom:
@@ -123,8 +139,12 @@ Create chart name and version as used by the chart label.
         apiVersion: v1
         fieldPath: metadata.name
 {{- end -}}
+{{- end -}}
 
 {{- define "democratic-csi.external-snapshotter-container" -}}
+{{- $ := index . 0 }}
+{{- $windows := index . 2 }}
+{{- with index . 1 }}
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-snapshotter
 # beware upgrading version:
@@ -139,9 +159,11 @@ Create chart name and version as used by the chart label.
   {{- range .Values.controller.externalSnapshotter.extraArgs }}
   - {{ tpl . $root }}
   {{- end }}
+  {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  {{- end }}
   env:
   - name: NODE_NAME
     valueFrom:
@@ -159,8 +181,12 @@ Create chart name and version as used by the chart label.
         apiVersion: v1
         fieldPath: metadata.name
 {{- end -}}
+{{- end -}}
 
 {{- define "democratic-csi.external-health-monitor-controller" -}}
+{{- $ := index . 0 }}
+{{- $windows := index . 2 }}
+{{- with index . 1 }}
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-health-monitor
 - name: external-health-monitor-controller
@@ -172,23 +198,38 @@ Create chart name and version as used by the chart label.
   {{- range .Values.controller.externalHealthMonitorController.extraArgs }}
   - {{ tpl . $root }}
   {{- end }}
+  {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  {{- end }}
+{{- end -}}
 {{- end -}}
 
 {{- define "democratic-csi.csi-proxy" -}}
+{{- $ := index . 0 }}
+{{- $windows := index . 2 }}
+{{- with index . 1 }}
 {{- $root := . -}}
 - name: csi-proxy
   image: {{ .Values.csiProxy.image }}
   env:
   - name: BIND_TO
-    value: "unix:///csi-data/csi.sock"
+    value: "unix://{{ .csiSocketAddress }}"
+  {{- if eq $windows "0" }}
   - name: PROXY_TO
     value: "unix:///csi-data/csi.sock.internal"
+  {{- end }}
+  {{- if eq $windows "1" }}
+  - name: PROXY_TO
+    value: "npipe://{{ .csiPipeAddress }}"
+  {{- end }}
+  {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
     name: socket-dir
+  {{- end }}
+{{- end -}}
 {{- end -}}
 
 {{- define "democratic-csi.controller-rbac-rules" -}}

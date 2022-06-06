@@ -1,5 +1,7 @@
 {{- if and .Values.controller.enabled (eq .Values.controller.strategy "deployment") -}}
+{{- $root := . -}}
 {{- $controllerStrategy := "deployment" -}}
+{{- $_ := set $root "csiSocketAddress" "/csi-data/csi.sock" -}}
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -12,13 +14,16 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/csi-role: "controller"
+    app.kubernetes.io/component: "controller-linux"
 spec:
   replicas: {{ .Values.controller.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
       app.kubernetes.io/csi-role: "controller"
+      app.kubernetes.io/component: "controller-linux"
   template:
     metadata:
       annotations:
@@ -35,7 +40,9 @@ spec:
         {{- end }}
         app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
         app.kubernetes.io/csi-role: "controller"
+        app.kubernetes.io/component: "controller-linux"
     spec:
       {{- if .Values.controller.rbac.enabled }}
       serviceAccount: {{ include "democratic-csi.fullname" . }}-controller-sa
@@ -46,23 +53,23 @@ spec:
       containers:
 
       {{- if and .Values.controller.externalAttacher.enabled (eq .Values.controller.strategy $controllerStrategy) }}
-{{ include "democratic-csi.external-attacher-container" . | indent 6 }}
+{{ include "democratic-csi.external-attacher-container" (list $ . "0") | indent 6 }}
       {{- end }}
 
       {{- if and .Values.controller.externalProvisioner.enabled (eq .Values.controller.strategy $controllerStrategy) }}
-{{ include "democratic-csi.external-provisioner-container" . | indent 6 }}
+{{ include "democratic-csi.external-provisioner-container" (list $ . "0") | indent 6 }}
       {{- end }}
 
       {{- if and .Values.controller.externalResizer.enabled (eq .Values.controller.strategy $controllerStrategy) }}
-{{ include "democratic-csi.external-resizer-container" . | indent 6 }}
+{{ include "democratic-csi.external-resizer-container" (list $ . "0") | indent 6 }}
       {{- end }}
 
       {{- if and .Values.controller.externalSnapshotter.enabled (eq .Values.controller.strategy $controllerStrategy) }}
-{{ include "democratic-csi.external-snapshotter-container" . | indent 6 }}
+{{ include "democratic-csi.external-snapshotter-container" (list $ . "0") | indent 6 }}
       {{- end }}
 
       {{- if and .Values.controller.externalHealthMonitorController.enabled (eq .Values.controller.strategy $controllerStrategy) }}
-{{ include "democratic-csi.external-health-monitor-controller" . | indent 6 }}
+{{ include "democratic-csi.external-health-monitor-controller" (list $ . "0") | indent 6 }}
       {{- end }}
 
       {{- if .Values.controller.driver.enabled }}
@@ -127,7 +134,7 @@ spec:
       {{- end }}
 
       {{- if .Values.csiProxy.enabled }}
-{{ include "democratic-csi.csi-proxy" . | indent 6 }}
+{{ include "democratic-csi.csi-proxy" (list $ . "0") | indent 6 }}
       {{- end }}
 
       volumes:
@@ -149,8 +156,9 @@ spec:
 {{- if .Values.controller.extraVolumes }}
 {{ toYaml .Values.controller.extraVolumes | indent 6 }}
 {{- end }}
-      {{- with .Values.controller.nodeSelector }}
       nodeSelector:
+        kubernetes.io/os: linux
+      {{- with .Values.controller.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.controller.affinity }}
