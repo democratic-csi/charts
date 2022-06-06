@@ -99,6 +99,11 @@ spec:
         {{- end }}
         - --server-socket={{ $csiPipeAddress }}
 
+        {{- if .Values.node.driver.resources }}
+        resources:
+{{ toYaml .Values.node.driver.resources | indent 10 }}
+        {{- end }}
+
         env:
         - name: CSI_NODE_ID
           valueFrom:
@@ -156,6 +161,10 @@ spec:
         - {{ tpl . $root }}
         {{- end }}
         - --plugin-registration-path={{ .Values.node.kubeletHostPath }}/plugins_registry
+        {{- if .Values.node.driverRegistrar.resources }}
+        resources:
+{{ toYaml .Values.node.driverRegistrar.resources | indent 10 }}
+        {{- end }}
         env:
         - name: KUBE_NODE_NAME
           valueFrom:

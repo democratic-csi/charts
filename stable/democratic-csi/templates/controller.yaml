@@ -98,6 +98,11 @@ spec:
         - --server-socket=/csi-data/csi.sock
         {{- end }}
 
+        {{- if .Values.controller.driver.resources }}
+        resources:
+{{ toYaml .Values.controller.driver.resources | indent 10 }}
+        {{- end }}
+
         env:
         - name: NODE_EXTRA_CA_CERTS
           value: "/tmp/certs/extra-ca-certs.crt"

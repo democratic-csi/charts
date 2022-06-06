@@ -39,10 +39,6 @@ csiDriver:
   # None|File|ReadWriteOnceWithFSType
   # fsGroupPolicy: ReadWriteOnceWithFSType
   
-  # clusters before k8s 1.14 requeired manual installation
-  # kubectl create -f https://raw.githubusercontent.com/kubernetes/csi-api/master/pkg/crd/manifests/csidriver.yaml
-  installCRD: false
-  
   # k8s 1.16+
   # volumeLifecycleModes: []
   
@@ -87,6 +83,7 @@ controller:
     - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
+    resources:
 
   # https://kubernetes-csi.github.io/docs/external-provisioner.html
   externalProvisioner:
@@ -102,6 +99,7 @@ controller:
     - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
+    resources:
 
   # https://kubernetes-csi.github.io/docs/external-resizer.html
   externalResizer:
@@ -116,6 +114,7 @@ controller:
     - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
+    resources:
 
   # https://kubernetes-csi.github.io/docs/external-snapshotter.html
   externalSnapshotter:
@@ -132,6 +131,7 @@ controller:
     - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
+    resources:
 
   # https://github.com/kubernetes-csi/external-health-monitor
   externalHealthMonitorController:
@@ -148,6 +148,7 @@ controller:
     #- --list-volumes-interval
     # if you do not want to completely override the defaults use this
     extraArgs: []
+    resources:
 
   # https://kubernetes-csi.github.io/docs/cluster-driver-registrar.html
   # not implemented, likely uncessary at this point
@@ -178,6 +179,7 @@ controller:
 #        - SYS_ADMIN
 #      privileged: true
 
+    resources:
     extraEnv: []
     extraVolumeMounts: []
 #    - name: foo
@@ -235,6 +237,7 @@ node:
 #        exec:
 #          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
 
+    resources:
     extraEnv: []
     extraVolumeMounts: []
 #    - name: foo
@@ -250,6 +253,7 @@ node:
     - --kubelet-registration-path={{ .Values.node.kubeletHostPath }}/plugins/{{ .Values.csiDriver.name }}/csi.sock
     # if you do not want to completely override the defaults use this
     extraArgs: []
+    resources:
 
   extraVolumes: []
 #  - name: foo
@@ -312,6 +316,7 @@ volumeSnapshotClasses: []
 csiProxy:
   enabled: true
   image: docker.io/democraticcsi/csi-grpc-proxy:v0.5.3
+  resources:
 
 # Configure a pod security policy to allow privileged pods
 enablePSP: false

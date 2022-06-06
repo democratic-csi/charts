@@ -55,6 +55,10 @@ Create chart name and version as used by the chart label.
   {{- range .Values.controller.externalAttacher.extraArgs }}
   - {{ tpl . $root }}
   {{- end }}
+  {{- if .Values.controller.externalAttacher.resources }}
+  resources:
+{{ toYaml .Values.controller.externalAttacher.resources | indent 4 }}
+  {{- end }}
   {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
@@ -77,6 +81,10 @@ Create chart name and version as used by the chart label.
   {{- end }}
   {{- range .Values.controller.externalProvisioner.extraArgs }}
   - {{ tpl . $root }}
+  {{- end }}
+  {{- if .Values.controller.externalProvisioner.resources }}
+  resources:
+{{ toYaml .Values.controller.externalProvisioner.resources | indent 4 }}
   {{- end }}
   {{- if eq $windows "0" }}
   volumeMounts:
@@ -116,6 +124,10 @@ Create chart name and version as used by the chart label.
   {{- end }}
   {{- range .Values.controller.externalResizer.extraArgs }}
   - {{ tpl . $root }}
+  {{- end }}
+  {{- if .Values.controller.externalResizer.resources }}
+  resources:
+{{ toYaml .Values.controller.externalResizer.resources | indent 4 }}
   {{- end }}
   {{- if eq $windows "0" }}
   volumeMounts:
@@ -159,6 +171,10 @@ Create chart name and version as used by the chart label.
   {{- range .Values.controller.externalSnapshotter.extraArgs }}
   - {{ tpl . $root }}
   {{- end }}
+  {{- if .Values.controller.externalSnapshotter.resources }}
+  resources:
+{{ toYaml .Values.controller.externalSnapshotter.resources | indent 4 }}
+  {{- end }}
   {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
@@ -198,6 +214,10 @@ Create chart name and version as used by the chart label.
   {{- range .Values.controller.externalHealthMonitorController.extraArgs }}
   - {{ tpl . $root }}
   {{- end }}
+  {{- if .Values.controller.externalHealthMonitorController.resources }}
+  resources:
+{{ toYaml .Values.controller.externalHealthMonitorController.resources | indent 4 }}
+  {{- end }}
   {{- if eq $windows "0" }}
   volumeMounts:
   - mountPath: /csi-data
@@ -213,6 +233,10 @@ Create chart name and version as used by the chart label.
 {{- $root := . -}}
 - name: csi-proxy
   image: {{ .Values.csiProxy.image }}
+  {{- if .Values.csiProxy.resources }}
+  resources:
+{{ toYaml .Values.csiProxy.resources | indent 4 }}
+  {{- end }}
   env:
   - name: BIND_TO
     value: "unix://{{ .csiSocketAddress }}"

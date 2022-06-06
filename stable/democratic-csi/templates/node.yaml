@@ -99,6 +99,11 @@ spec:
         - --server-socket={{ .csiSocketAddress }}
         {{- end }}
 
+        {{- if .Values.node.driver.resources }}
+        resources:
+{{ toYaml .Values.node.driver.resources | indent 10 }}
+        {{- end }}
+
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:
@@ -193,6 +198,10 @@ spec:
         {{- end }}
         {{- range .Values.node.driverRegistrar.extraArgs }}
         - {{ tpl . $root }}
+        {{- end }}
+        {{- if .Values.node.driverRegistrar.resources }}
+        resources:
+{{ toYaml .Values.node.driverRegistrar.resources | indent 10 }}
         {{- end }}
         env:
         - name: KUBE_NODE_NAME
