@@ -18,6 +18,7 @@ kubectl -n kube-system logs -f -l app=snapshot-controller
 
 ```
 # get latest crds
+# https://github.com/kubernetes-csi/external-snapshotter/tree/master/client/config/crd
 cd crds
 for file in snapshot.storage.k8s.io_volumesnapshotclasses.yaml snapshot.storage.k8s.io_volumesnapshotcontents.yaml snapshot.storage.k8s.io_volumesnapshots.yaml; do
   wget -O "${file}" "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/master/client/config/crd/${file}"
