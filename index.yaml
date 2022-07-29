@@ -364,6 +364,16 @@ entries:
   snapshot-controller:
   - apiVersion: v2
     appVersion: 6.0.1
+    created: "2022-07-29T03:39:50.798233073Z"
+    description: csi snapshot-controller
+    digest: acab541268065ae19e9ef3e9394bdbf4bcd9055b638b17b4aac0764be2c8aede
+    name: snapshot-controller
+    type: application
+    urls:
+    - https://github.com/democratic-csi/charts/releases/download/snapshot-controller-0.1.4/snapshot-controller-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 6.0.1
     created: "2022-07-29T03:33:55.460518721Z"
     description: A Helm chart for Kubernetes
     digest: 0f0b2f23d7b35168a18e881ae4fe21be49c9f9a4f9419a3373bb4793bde713a8
@@ -402,4 +412,4 @@ entries:
     urls:
     - https://github.com/democratic-csi/charts/releases/download/snapshot-controller-0.1.0/snapshot-controller-0.1.0.tgz
     version: 0.1.0
-generated: "2022-07-29T03:33:55.460840023Z"
+generated: "2022-07-29T03:39:50.798574597Z"
