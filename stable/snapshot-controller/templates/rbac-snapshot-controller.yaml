@@ -1,4 +1,4 @@
-{{- if .Values.controller.rbac.enabled }}
+{{- if and .Values.controller.enabled .Values.controller.rbac.enabled }}
 # RBAC file for the snapshot controller.
 #
 # The snapshot controller implements the control loop for CSI snapshot functionality.
