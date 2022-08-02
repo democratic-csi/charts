@@ -14,11 +14,20 @@ apiVersion: apps/v1
 metadata:
   name: snapshot-controller
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: snapshot-controller
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    helm.sh/chart: {{ include "snapshot-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.controller.replicaCount }}
   selector:
     matchLabels:
       app: snapshot-controller
+      app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
   # the snapshot controller won't be marked as ready if the v1 CRDs are unavailable
   # in #504 the snapshot-controller will exit after around 7.5 seconds if it
   # can't find the v1 CRDs so this value should be greater than that
@@ -32,6 +41,9 @@ spec:
     metadata:
       labels:
         app: snapshot-controller
+        app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- if .Values.controller.rbac.enabled }}
       serviceAccount: snapshot-controller

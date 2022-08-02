@@ -7,15 +7,25 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
     app: snapshot-validation
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    helm.sh/chart: {{ include "snapshot-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.validatingWebhook.replicaCount }}
   selector:
     matchLabels:
       app: snapshot-validation
+      app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
   template:
     metadata:
       labels:
         app: snapshot-validation
+        app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- if .Values.validatingWebhook.rbac.enabled }}
       serviceAccountName: snapshot-webhook
@@ -43,9 +53,18 @@ kind: Service
 metadata:
   name: snapshot-validation-service
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    helm.sh/chart: {{ include "snapshot-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     app: snapshot-validation
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+
   ports:
     - protocol: TCP
       port: 443 # Change if needed

@@ -11,12 +11,21 @@ kind: ServiceAccount
 metadata:
   name: snapshot-controller
   namespace: {{ .Release.Namespace | quote }}
-
+  labels:
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    helm.sh/chart: {{ include "snapshot-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: snapshot-controller-runner
+  labels:
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    helm.sh/chart: {{ include "snapshot-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -51,6 +60,11 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: snapshot-controller-role
+  labels:
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    helm.sh/chart: {{ include "snapshot-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 subjects:
   - kind: ServiceAccount
     name: snapshot-controller
@@ -66,6 +80,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: snapshot-controller-leaderelection
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    helm.sh/chart: {{ include "snapshot-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
 - apiGroups: ["coordination.k8s.io"]
   resources: ["leases"]
@@ -77,6 +96,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: snapshot-controller-leaderelection
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: {{ include "snapshot-controller.name" . }}
+    helm.sh/chart: {{ include "snapshot-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 subjects:
   - kind: ServiceAccount
     name: snapshot-controller
