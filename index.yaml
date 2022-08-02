@@ -364,6 +364,16 @@ entries:
   snapshot-controller:
   - apiVersion: v2
     appVersion: 6.0.1
+    created: "2022-08-02T18:06:22.223643614Z"
+    description: csi snapshot-controller
+    digest: 0640205cbc946a252c8160e9cda99d0f74f2f9d81d749fd41f9ff3ab152f6f38
+    name: snapshot-controller
+    type: application
+    urls:
+    - https://github.com/democratic-csi/charts/releases/download/snapshot-controller-0.2.1/snapshot-controller-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
+    appVersion: 6.0.1
     created: "2022-08-02T17:53:26.744063558Z"
     description: csi snapshot-controller
     digest: bd487000cd941e378a70b7a2bf9a39db9ad89a91c6634a50a1ccfd35fc99ab4d
@@ -422,4 +432,4 @@ entries:
     urls:
     - https://github.com/democratic-csi/charts/releases/download/snapshot-controller-0.1.0/snapshot-controller-0.1.0.tgz
     version: 0.1.0
-generated: "2022-08-02T17:53:26.744366464Z"
+generated: "2022-08-02T18:06:22.223959918Z"
