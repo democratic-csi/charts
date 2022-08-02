@@ -17,6 +17,9 @@ spec:
       labels:
         app: snapshot-validation
     spec:
+      {{- if .Values.validatingWebhook.rbac.enabled }}
+      serviceAccountName: snapshot-webhook
+      {{- end }}
       containers:
       - name: snapshot-validation
         image: {{ .Values.validatingWebhook.image.repository }}:{{ .Values.validatingWebhook.image.tag }}

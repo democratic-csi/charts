@@ -7,11 +7,12 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-rbac:
-  enabled: true
 
 controller:
   enabled: true
+  rbac:
+    enabled: true
+
   replicaCount: 3
   image:
     repository: k8s.gcr.io/sig-storage/snapshot-controller
@@ -27,10 +28,12 @@ controller:
 
 validatingWebhook:
   enabled: false
+  rbac:
+    enabled: true
   replicaCount: 3
   image:
     repository: k8s.gcr.io/sig-storage/snapshot-validation-webhook
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: v5.0.1
+    tag: v6.0.1
 

@@ -33,7 +33,7 @@ spec:
       labels:
         app: snapshot-controller
     spec:
-      {{- if .Values.rbac.enabled }}
+      {{- if .Values.controller.rbac.enabled }}
       serviceAccount: snapshot-controller
       {{- end }}
       containers:
