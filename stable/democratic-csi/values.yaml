@@ -210,6 +210,7 @@ node:
   hostNetwork: true
   hostAliases: []
   hostIPC: true
+  HostPIC: false
   kubeletHostPath: /var/lib/kubelet
   podAnnotations: {}
   podLabels: {}
@@ -243,6 +244,8 @@ node:
 #    - name: foo
 #      mountPath: /foo
   
+    iscsiDirHostPath: /etc/iscsi
+    iscsiDirHostPathCheckDirectory: true
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true

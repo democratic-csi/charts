@@ -52,6 +52,7 @@ spec:
       hostAliases: {{ .Values.node.hostAliases }}
       # Required by multipath detach
       hostIPC: {{ .Values.node.hostIPC }}
+      hostPID: {{ .Values.node.hostPID }}
       containers:
 
       {{- if and .Values.controller.externalAttacher.enabled (eq .Values.controller.strategy $controllerStrategy) }}
@@ -152,7 +153,7 @@ spec:
           mountPropagation: Bidirectional
         {{- if $mountIscsi }}
         - name: iscsi-dir
-          mountPath: /etc/iscsi
+          mountPath: {{ .Values.node.driver.iscsiDirHostPath }}
           mountPropagation: Bidirectional
         - name: iscsi-info
           mountPath: /var/lib/iscsi
@@ -266,8 +267,10 @@ spec:
       {{- if $mountIscsi }}
       - name: iscsi-dir
         hostPath:
-          path: /etc/iscsi
+          path: {{ .Values.node.driver.iscsiDirHostPath }}
+          {{- if .Values.node.driver.iscsiDirHostPathCheckDirectory }}
           type: Directory
+          {{- end }}
       - name: iscsi-info
         hostPath:
           path: /var/lib/iscsi
