@@ -245,7 +245,7 @@ node:
 #      mountPath: /foo
   
     iscsiDirHostPath: /etc/iscsi
-    iscsiDirHostPathCheckDirectory: true
+    iscsiDirHostType: Directory
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true

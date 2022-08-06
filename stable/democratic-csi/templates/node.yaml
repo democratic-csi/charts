@@ -268,9 +268,7 @@ spec:
       - name: iscsi-dir
         hostPath:
           path: {{ .Values.node.driver.iscsiDirHostPath }}
-          {{- if .Values.node.driver.iscsiDirHostPathCheckDirectory }}
-          type: Directory
-          {{- end }}
+          type: {{ .Values.node.driver.iscsiDirHostType }}
       - name: iscsi-info
         hostPath:
           path: /var/lib/iscsi
