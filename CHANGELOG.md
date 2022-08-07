@@ -1,3 +1,9 @@
+# 0.13.4
+
+Released 2022-08-07
+
+- enabel options for hostPID, iscsiDirHostPath and iscsiDirHostPathType for [Talos](https://talos.dev) iscsi support.
+
 # 0.13.0
 
 Released 2022-06-06
