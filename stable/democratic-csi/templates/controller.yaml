@@ -47,6 +47,9 @@ spec:
       {{- if .Values.controller.rbac.enabled }}
       serviceAccount: {{ include "democratic-csi.fullname" . }}-controller-sa
       {{- end }}
+      {{- if .Values.controller.priorityClassName }}
+      priorityClassName: "{{ .Values.controller.priorityClassName }}"
+      {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
       hostAliases: {{ .Values.controller.hostAliases }}
       hostIPC: {{ .Values.controller.hostIPC }}

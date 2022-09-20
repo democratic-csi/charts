@@ -47,6 +47,9 @@ spec:
       {{- if .Values.node.rbac.enabled }}
       serviceAccount: {{ include "democratic-csi.fullname" . }}-node-sa
       {{- end }}
+      {{- if .Values.node.priorityClassName }}
+      priorityClassName: "{{ .Values.node.priorityClassName }}"
+      {{- end }}
       # Required by iSCSI
       hostNetwork: {{ .Values.node.hostNetwork }}
       hostAliases: {{ .Values.node.hostAliases }}

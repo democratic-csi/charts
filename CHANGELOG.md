@@ -1,3 +1,9 @@
+# 0.13.5
+
+Released 2022-09-20
+
+- add `priorityClassName` value for both node DaemonSet and controller Deployment
+
 # 0.13.4
 
 Released 2022-08-07

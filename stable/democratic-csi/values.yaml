@@ -65,6 +65,7 @@ controller:
   hostIPC: false
   podAnnotations: {}
   podLabels: {}
+  priorityClassName: ""
   
   # deployment = deploy controller parts in a distinct deployment
   # node       = deploy controller as sidecars with node daemonset
@@ -214,6 +215,7 @@ node:
   kubeletHostPath: /var/lib/kubelet
   podAnnotations: {}
   podLabels: {}
+  priorityClassName: ""
 
   livenessProbe:
     enabled: true
