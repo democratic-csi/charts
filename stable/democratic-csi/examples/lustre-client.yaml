@@ -1,0 +1,128 @@
+# driver only works with 1.16+
+csiDriver:
+  # should be globally unique for a given cluster
+  name: "org.democratic-csi.lustre-client"
+
+storageClasses:
+- name: lustre-client
+  defaultClass: false
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  allowVolumeExpansion: false
+  parameters:
+    fsType: lustre
+
+  mountOptions: []
+  secrets:
+    provisioner-secret:
+    controller-publish-secret:
+    node-stage-secret:
+    node-publish-secret:
+    controller-expand-secret:
+
+# if your cluster supports snapshots you may enable below
+volumeSnapshotClasses: []
+#- name: lustre-client
+#  secrets:
+#    snapshotter-secret:
+
+
+driver:
+  config:
+    # please see the most up-to-date example of the corresponding config here:
+    # https://github.com/democratic-csi/democratic-csi/tree/master/examples
+    # YOU MUST COPY THE DATA HERE INLINE!
+    driver: lustre-client
+    #...
+
+# There are 4 different approaches to installing the driver
+# 1: Run the controller service separated from the node service, mount the base share into the controller pod at run time
+# 2. Run the controller service separated from the node service, use an existing hostPath mount of the base share from the node in the controller pod
+# 3. Run the controller service jointly with the node service, mount the base share into the node pod at run time
+# 4. Run the controller service jointly with the node service, use an existing hostPath mount of the base share from the node in the node pod
+#
+# Uncomment the lines/sections below appropriate for your desired use-case
+
+controller:
+  enabled: true
+
+  externalResizer:
+    enabled: false
+
+  # For Options 1 and 2
+  #strategy: deployment
+
+  # For Option 1
+  #hostNetwork: true
+  #hostIPC: true
+
+  # For Options 3 and 4
+  #strategy: node
+  
+  
+# Option 1
+# do this if the nodes do NOT already have the base volume mounted out-of-band from k8s
+#  driver:
+#    securityContext:
+#      allowPrivilegeEscalation: true
+#      capabilities:
+#        add:
+#        - SYS_ADMIN
+#      privileged: true
+#    lifecycle:
+#      postStart:
+#        exec:
+#          command: ["/bin/sh", "-c", "mkdir -p <controllerBasePath>; mount <shareHost>:<shareBasePath> <controllerBasePath>"]
+#      preStop:
+#        exec:
+#          command: ["/bin/sh","-c","umount <controllerBasePath>"]
+
+# Option 2
+# do this if all nodes DO have the base volume mounted out-of-band from k8s
+#  driver:
+#    securityContext:
+#      allowPrivilegeEscalation: true
+#      capabilities:
+#        add:
+#        - SYS_ADMIN
+#      privileged: true
+#
+#    extraVolumeMounts:
+#    - name: lustre-storage
+#      mountPath: <controllerBasePath>
+#      mountPropagation: Bidirectional
+#
+#  extraVolumes:
+#  - name: lustre-storage
+#    hostPath:
+#      path: /already/mounted/path/to <shareHost>:<shareBasePath>
+#      type: Directory
+
+
+# Options 3 and 4
+#node:
+
+# Option 3
+# do this if the nodes do NOT already have the base volume mounted out-of-band from k8s
+#  driver:
+#    lifecycle:
+#      postStart:
+#        exec:
+#          command: ["/bin/sh", "-c", "mkdir -p <controllerBasePath>; mount <shareHost>:<shareBasePath> <controllerBasePath>"]
+#      preStop:
+#        exec:
+#          command: ["/bin/sh","-c","umount <controllerBasePath>"]
+
+# Option 4
+# do this if all nodes DO have the base volume mounted out-of-band from k8s
+#  driver:
+#    extraVolumeMounts:
+#    - name: lustre-storage
+#      mountPath: <controllerBasePath>
+#      mountPropagation: Bidirectional
+#
+#  extraVolumes:
+#  - name: lustre-storage
+#    hostPath:
+#      path: /already/mounted/path/to <shareHost>:<shareBasePath>
+#      type: Directory
