@@ -50,7 +50,7 @@ spec:
       {{- end }}
       containers:
         - name: snapshot-controller
-          image: {{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}
+          image: {{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag | default (printf "v%s" .Chart.AppVersion) }}
           {{- if .Values.controller.image.pullPolicy }}
           imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
           {{- end }}
@@ -62,3 +62,4 @@ spec:
           - {{ tpl . $root }}
           {{- end }}
 {{- end }}
+

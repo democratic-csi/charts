@@ -32,7 +32,7 @@ spec:
       {{- end }}
       containers:
       - name: snapshot-validation
-        image: {{ .Values.validatingWebhook.image.repository }}:{{ .Values.validatingWebhook.image.tag }}
+        image: {{ .Values.validatingWebhook.image.repository }}:{{ .Values.validatingWebhook.image.tag  | default (printf "v%s" .Chart.AppVersion) }}
         {{- if .Values.validatingWebhook.image.pullPolicy }}
         imagePullPolicy: {{ .Values.validatingWebhook.image.pullPolicy }}
         {{- end }}
