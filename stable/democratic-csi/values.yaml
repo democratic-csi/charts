@@ -74,7 +74,7 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-attacher.html
   externalAttacher:
     enabled: false
-    image: k8s.gcr.io/sig-storage/csi-attacher:v3.4.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v3.4.0
     args:
     - --v=5
     - --leader-election
@@ -89,7 +89,7 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-provisioner.html
   externalProvisioner:
     enabled: true
-    image: k8s.gcr.io/sig-storage/csi-provisioner:v3.1.0
+    image: registry.k8s.io/sig-storage/csi-provisioner:v3.1.0
     args:
     - --v=5
     - --leader-election
@@ -105,7 +105,7 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-resizer.html
   externalResizer:
     enabled: true
-    image: k8s.gcr.io/sig-storage/csi-resizer:v1.4.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.4.0
     args:
     - --v=5
     - --leader-election
@@ -122,7 +122,7 @@ controller:
     enabled: true
     # 1.20+ should use v4.0.0+
     # READ *before* updating from beta https://github.com/kubernetes-csi/external-snapshotter#usage
-    image: k8s.gcr.io/sig-storage/csi-snapshotter:v5.0.1
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v5.0.1
     args:
     - --v=5
     - --leader-election
@@ -137,7 +137,7 @@ controller:
   # https://github.com/kubernetes-csi/external-health-monitor
   externalHealthMonitorController:
     enabled: false
-    image: k8s.gcr.io/sig-storage/csi-external-health-monitor-controller:v0.4.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.4.0
     args:
     - --v=5
     - --leader-election
@@ -251,7 +251,7 @@ node:
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true
-    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.1
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.5.1
     args:
     - --v=5
     - --csi-address={{ .csiSocketAddress }}
