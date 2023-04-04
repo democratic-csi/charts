@@ -3,6 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ include "democratic-csi.fullname" . }}-psp
+  labels:
     app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
     helm.sh/chart: {{ include "democratic-csi.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
