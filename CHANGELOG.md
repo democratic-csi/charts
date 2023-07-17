@@ -1,3 +1,23 @@
+# 0.14.0
+
+Released 2023-07-16
+
+BREAKING CHANGES: some default values have changed which should be enabled on
+all drivers *except* the `*-local` drivers. In other words, you must explicitly
+disable the defaults now for `*-local` drivers with the following:
+
+```yaml
+csiDriver:
+  attachRequired: false
+
+controller:
+  externalAttacher:
+    enabled: false
+```
+
+- bump sidecars versions
+- default `attachRequired: true` and enable `external-attacher` by default (see https://github.com/democratic-csi/democratic-csi/issues/307)
+
 # 0.13.5
 
 Released 2022-09-20

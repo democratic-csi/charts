@@ -2,6 +2,7 @@
 csiDriver:
   # should be globally unique for a given cluster
   name: "org.democratic-csi.local-hostpath"
+  attachRequired: false
   storageCapacity: true
   fsGroupPolicy: File
 
@@ -40,6 +41,9 @@ controller:
     - --strict-topology=true
     - --enable-capacity=true
     - --capacity-ownerref-level=1
+
+  externalAttacher:
+    enabled: false
 
   # distributed support is not yet ready
   externalResizer:
