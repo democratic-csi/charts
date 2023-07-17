@@ -2,9 +2,15 @@
 
 Released 2023-07-16
 
-BREAKING CHANGES: some default values have changed which should be enabled on
+BREAKING CHANGES: Some default values have changed which should be enabled on
 all drivers *except* the `*-local` drivers. In other words, you must explicitly
-disable the defaults now for `*-local` drivers with the following:
+disable the defaults now for `*-local` drivers with the `values.yaml` example
+below.
+
+Upgrading `CSIDriver.spec.attachRequired` is not allowed (immutable field) so
+you must first `kubectl delete csidrivers.storage.k8s.io <your driver>` before
+using the updated chart/values. It is entirely safe to remove the `CSIDriver`
+resource and let it recreate.
 
 ```yaml
 csiDriver:
