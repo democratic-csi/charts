@@ -233,6 +233,11 @@ Create chart name and version as used by the chart label.
 {{- $root := . -}}
 - name: csi-proxy
   image: {{ .Values.csiProxy.image }}
+  {{- if eq $windows "1" }}
+  workingDir: "$env:CONTAINER_SANDBOX_MOUNT_POINT/app"
+  command:
+  - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/csi-grpc-proxy.exe"
+  {{- end }}
   {{- if .Values.csiProxy.resources }}
   resources:
 {{ toYaml .Values.csiProxy.resources | indent 4 }}

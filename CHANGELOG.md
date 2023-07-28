@@ -1,3 +1,9 @@
+# 0.14.1
+
+Released 2023-07-16
+
+- support changes to containerd 1.7+ with windows host process
+
 # 0.14.0
 
 Released 2023-07-16

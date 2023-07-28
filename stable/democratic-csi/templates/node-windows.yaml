@@ -84,6 +84,11 @@ spec:
       {{- if .Values.node.driver.enabled }}
       - name: csi-driver
         image: {{ .Values.node.driver.image }}
+        workingDir: "$env:CONTAINER_SANDBOX_MOUNT_POINT/app"
+        command:
+        - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/node.exe"
+        - "--expose-gc"
+        - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/democratic-csi"
         {{- if .Values.node.driver.imagePullPolicy }}
         imagePullPolicy: {{ .Values.node.driver.imagePullPolicy }}
         {{- end }}
@@ -127,9 +132,9 @@ spec:
           failureThreshold: 3
           exec:
             command:
-            - bin/node.exe
+            - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/node.exe"
             - --expose-gc
-            - bin/liveness-probe
+            - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/liveness-probe"
             - --csi-version={{ .Values.csiDriver.version }}
             - --csi-address={{ $csiPipeAddress }}
           initialDelaySeconds: 10
