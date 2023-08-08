@@ -2,6 +2,7 @@
 csiDriver:
   # should be globally unique for a given cluster
   name: "org.democratic-csi.node-manual"
+  attachRequired: false
 
 controller:
   enabled: false
