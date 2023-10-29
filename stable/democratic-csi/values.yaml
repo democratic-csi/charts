@@ -63,6 +63,8 @@ controller:
   hostNetwork: false
   hostAliases: []
   hostIPC: false
+  annotations: {}
+  labels: {}
   podAnnotations: {}
   podLabels: {}
   priorityClassName: ""
@@ -213,6 +215,8 @@ node:
   hostIPC: true
   hostPID: false
   kubeletHostPath: /var/lib/kubelet
+  annotations: {}
+  labels: {}
   podAnnotations: {}
   podLabels: {}
   priorityClassName: ""

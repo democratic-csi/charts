@@ -9,6 +9,10 @@ apiVersion: apps/v1
 metadata:
   name: {{ include "democratic-csi.fullname" . }}-node
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.node.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
     helm.sh/chart: {{ include "democratic-csi.chart" . }}
@@ -16,6 +20,9 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/csi-role: "node"
     app.kubernetes.io/component: "node-linux"
+    {{- with .Values.node.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
