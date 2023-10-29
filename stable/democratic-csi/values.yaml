@@ -215,6 +215,8 @@ node:
   hostIPC: true
   hostPID: false
   kubeletHostPath: /var/lib/kubelet
+  annotations: {}
+  labels: {}
   podAnnotations: {}
   podLabels: {}
   priorityClassName: ""
