@@ -8,6 +8,10 @@ apiVersion: apps/v1
 metadata:
   name: {{ include "democratic-csi.fullname" . }}-controller
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.controller.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "democratic-csi.name" . }}
     helm.sh/chart: {{ include "democratic-csi.chart" . }}
@@ -15,6 +19,9 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/csi-role: "controller"
     app.kubernetes.io/component: "controller-linux"
+    {{- with .Values.controller.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.controller.replicaCount }}
   selector:

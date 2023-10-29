@@ -63,6 +63,8 @@ controller:
   hostNetwork: false
   hostAliases: []
   hostIPC: false
+  annotations: {}
+  labels: {}
   podAnnotations: {}
   podLabels: {}
   priorityClassName: ""
