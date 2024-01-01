@@ -3,18 +3,19 @@
 {{- if .Values.storageClasses -}}
 {{- range .Values.storageClasses }}
 {{- $classRoot := . -}}
+{{- $storageClassAnnotations := ( $classRoot.annotations | default dict ) }}
+{{- if $classRoot.defaultClass }}
+{{- $storageClassAnnotations = merge $storageClassAnnotations (dict "storageclass.kubernetes.io/is-default-class" $classRoot.defaultClass) }}
+{{- end }}
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: {{ required "storage class name is required" $classRoot.name }}
+  {{- with $storageClassAnnotations }}
   annotations:
-    {{- with $classRoot.annotations }}
     {{- toYaml . | nindent 4 }}
-    {{- end }}
-    {{- if $classRoot.defaultClass }}
-    storageclass.kubernetes.io/is-default-class: {{ $classRoot.defaultClass | quote }}
-    {{- end }}
+  {{- end }}
   labels:
     {{- with $classRoot.labels }}
     {{- toYaml . | nindent 4 }}
