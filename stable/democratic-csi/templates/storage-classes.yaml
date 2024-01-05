@@ -5,7 +5,7 @@
 {{- $classRoot := . -}}
 {{- $storageClassAnnotations := ( $classRoot.annotations | default dict ) }}
 {{- if $classRoot.defaultClass }}
-{{- $storageClassAnnotations = merge $storageClassAnnotations (dict "storageclass.kubernetes.io/is-default-class" $classRoot.defaultClass) }}
+{{- $storageClassAnnotations = merge $storageClassAnnotations (dict "storageclass.kubernetes.io/is-default-class" "true") }}
 {{- end }}
 ---
 apiVersion: storage.k8s.io/v1
