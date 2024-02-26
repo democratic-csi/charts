@@ -226,6 +226,7 @@ node:
 
   cleanup:
     image: docker.io/busybox:1.32.0
+    resources:
 
   # democratic-csi node
   driver:
