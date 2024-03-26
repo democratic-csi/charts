@@ -16,6 +16,7 @@ metadata:
 spec:
   attachRequired: {{ .Values.csiDriver.attachRequired }}
   podInfoOnMount: {{ .Values.csiDriver.podInfoOnMount }}
+  # https://kubernetes.io/blog/2020/12/14/kubernetes-release-1.20-fsgroupchangepolicy-fsgrouppolicy/
   {{- if semverCompare ">=1.19.0-0" .Capabilities.KubeVersion.Version }}
   {{- if .Values.csiDriver.fsGroupPolicy }}
   fsGroupPolicy: {{ .Values.csiDriver.fsGroupPolicy }}
@@ -48,6 +49,12 @@ spec:
   {{- if semverCompare ">=1.19.0-0" .Capabilities.KubeVersion.Version }}
   {{- if or (eq ( .Values.csiDriver.storageCapacity | toString ) "false") (eq ( .Values.csiDriver.storageCapacity | toString ) "true") }}
   storageCapacity: {{ .Values.csiDriver.storageCapacity }}
+  {{- end }}
+  {{- end }}
+
+  {{- if semverCompare ">=1.25.0-0" .Capabilities.KubeVersion.Version }}
+  {{- if or (eq ( .Values.csiDriver.seLinuxMount | toString ) "false") (eq ( .Values.csiDriver.seLinuxMount | toString ) "true") }}
+  seLinuxMount: {{ .Values.csiDriver.seLinuxMount }}
   {{- end }}
   {{- end }}
 

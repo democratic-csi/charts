@@ -20,8 +20,9 @@ driver:
   # to the corresponding value that you place in the secret as the value is used
   # by the chart for other purposes beyond secret creation
   existingConfigSecret:
-  config: {}
-    #driver: 
+  config:
+    {}
+    #driver:
     # rest of per-driver config data/syntax
     # ...
 
@@ -34,14 +35,19 @@ csiDriver:
   enabled: true
   attachRequired: true
   podInfoOnMount: true
+  # https://github.com/democratic-csi/democratic-csi/issues/274#issuecomment-1426922600
   # https://kubernetes-csi.github.io/docs/support-fsgroup.html
+  # https://kubernetes-csi.github.io/docs/support-fsgroup.html#delegate-fsgroup-to-csi-driver
+  #
+  # if node service advertises VOLUME_MOUNT_GROUP capability then fsGroup is passed to driver
+  #
   # k8s 1.19+ (ignored otherwise)
   # None|File|ReadWriteOnceWithFSType
   # fsGroupPolicy: ReadWriteOnceWithFSType
-  
+
   # k8s 1.16+
   # volumeLifecycleModes: []
-  
+
   # k8s 1.20+
   # tokenRequests: []
 
@@ -68,7 +74,7 @@ controller:
   podAnnotations: {}
   podLabels: {}
   priorityClassName: ""
-  
+
   # deployment = deploy controller parts in a distinct deployment
   # node       = deploy controller as sidecars with node daemonset
   strategy: deployment
@@ -76,14 +82,14 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-attacher.html
   externalAttacher:
     enabled: true
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.3.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
     args:
-    - --v=5
-    - --leader-election
-    - --leader-election-namespace={{ .Release.Namespace }}
-    - --timeout=90s
-    - --worker-threads=10
-    - --csi-address={{ .csiSocketAddress }}
+      - --v=5
+      - --leader-election
+      - --leader-election-namespace={{ .Release.Namespace }}
+      - --timeout=90s
+      - --worker-threads=10
+      - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
     resources:
@@ -91,15 +97,15 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-provisioner.html
   externalProvisioner:
     enabled: true
-    image: registry.k8s.io/sig-storage/csi-provisioner:v3.5.0
+    image: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
     args:
-    - --v=5
-    - --leader-election
-    - --leader-election-namespace={{ .Release.Namespace }}
-    - --timeout=90s
-    - --worker-threads=10
-    - --extra-create-metadata
-    - --csi-address={{ .csiSocketAddress }}
+      - --v=5
+      - --leader-election
+      - --leader-election-namespace={{ .Release.Namespace }}
+      - --timeout=90s
+      - --worker-threads=10
+      - --extra-create-metadata
+      - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
     resources:
@@ -107,14 +113,14 @@ controller:
   # https://kubernetes-csi.github.io/docs/external-resizer.html
   externalResizer:
     enabled: true
-    image: registry.k8s.io/sig-storage/csi-resizer:v1.8.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.9.0
     args:
-    - --v=5
-    - --leader-election
-    - --leader-election-namespace={{ .Release.Namespace }}
-    - --timeout=90s
-    - --workers=10
-    - --csi-address={{ .csiSocketAddress }}
+      - --v=5
+      - --leader-election
+      - --leader-election-namespace={{ .Release.Namespace }}
+      - --timeout=90s
+      - --workers=10
+      - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
     resources:
@@ -124,14 +130,14 @@ controller:
     enabled: true
     # 1.20+ should use v4.0.0+
     # READ *before* updating from beta https://github.com/kubernetes-csi/external-snapshotter#usage
-    image: registry.k8s.io/sig-storage/csi-snapshotter:v6.2.2
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.0
     args:
-    - --v=5
-    - --leader-election
-    - --leader-election-namespace={{ .Release.Namespace }}
-    - --timeout=90s
-    - --worker-threads=10
-    - --csi-address={{ .csiSocketAddress }}
+      - --v=5
+      - --leader-election
+      - --leader-election-namespace={{ .Release.Namespace }}
+      - --timeout=90s
+      - --worker-threads=10
+      - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
     resources:
@@ -139,14 +145,14 @@ controller:
   # https://github.com/kubernetes-csi/external-health-monitor
   externalHealthMonitorController:
     enabled: false
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.9.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
     args:
-    - --v=5
-    - --leader-election
-    - --leader-election-namespace={{ .Release.Namespace }}
-    - --timeout=90s
-    - --worker-threads=10
-    - --csi-address={{ .csiSocketAddress }}
+      - --v=5
+      - --leader-election
+      - --leader-election-namespace={{ .Release.Namespace }}
+      - --timeout=90s
+      - --worker-threads=10
+      - --csi-address={{ .csiSocketAddress }}
     #- --enable-node-watcher
     #- --list-volumes-interval
     # if you do not want to completely override the defaults use this
@@ -168,31 +174,31 @@ controller:
     # imagePullPolicy: Always
     logLevel: info
     lifecycle:
-#      postStart:
-#        exec:
-#          command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
-#      preStop:
-#        exec:
-#          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
+    #      postStart:
+    #        exec:
+    #          command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+    #      preStop:
+    #        exec:
+    #          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
 
     securityContext:
-#      allowPrivilegeEscalation: true
-#      capabilities:
-#        add:
-#        - SYS_ADMIN
-#      privileged: true
+    #      allowPrivilegeEscalation: true
+    #      capabilities:
+    #        add:
+    #        - SYS_ADMIN
+    #      privileged: true
 
     resources:
     extraEnv: []
     extraVolumeMounts: []
-#    - name: foo
-#      mountPath: /foo
+  #    - name: foo
+  #      mountPath: /foo
 
   extraVolumes: []
-#  - name: foo
-#    hostPath:
-#      path: /dev
-#      type: Directory
+  #  - name: foo
+  #    hostPath:
+  #      path: /dev
+  #      type: Directory
 
   nodeSelector: {}
 
@@ -235,41 +241,41 @@ node:
     # imagePullPolicy: Always
     logLevel: info
     # set path to null if your OS has no localtime file
-    # RancherOS, openshift, etc 
+    # RancherOS, openshift, etc
     localtimeHostPath: /etc/localtime
     lifecycle:
-#      postStart:
-#        exec:
-#          command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
-#      preStop:
-#        exec:
-#          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
+    #      postStart:
+    #        exec:
+    #          command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+    #      preStop:
+    #        exec:
+    #          command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
 
     resources:
     extraEnv: []
     extraVolumeMounts: []
-#    - name: foo
-#      mountPath: /foo
-  
+    #    - name: foo
+    #      mountPath: /foo
+
     iscsiDirHostPath: /etc/iscsi
     iscsiDirHostPathType: Directory
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.0
     args:
-    - --v=5
-    - --csi-address={{ .csiSocketAddress }}
-    - --kubelet-registration-path={{ .Values.node.kubeletHostPath }}/plugins/{{ .Values.csiDriver.name }}/csi.sock
+      - --v=5
+      - --csi-address={{ .csiSocketAddress }}
+      - --kubelet-registration-path={{ .Values.node.kubeletHostPath }}/plugins/{{ .Values.csiDriver.name }}/csi.sock
     # if you do not want to completely override the defaults use this
     extraArgs: []
     resources:
 
   extraVolumes: []
-#  - name: foo
-#    hostPath:
-#      path: /dev
-#      type: Directory
+  #  - name: foo
+  #    hostPath:
+  #      path: /dev
+  #      type: Directory
 
   nodeSelector: {}
 
@@ -325,7 +331,7 @@ volumeSnapshotClasses: []
 # https://github.com/democratic-csi/csi-grpc-proxy
 csiProxy:
   enabled: true
-  image: docker.io/democraticcsi/csi-grpc-proxy:v0.5.3
+  image: docker.io/democraticcsi/csi-grpc-proxy:v0.5.6
   resources:
 
 # Configure a pod security policy to allow privileged pods

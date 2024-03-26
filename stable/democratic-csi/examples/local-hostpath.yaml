@@ -7,21 +7,21 @@ csiDriver:
   fsGroupPolicy: File
 
 storageClasses:
-- name: local-hostpath
-  defaultClass: false
-  reclaimPolicy: Delete
-  volumeBindingMode: WaitForFirstConsumer
-  # distributed support is not yet ready for expansion
-  allowVolumeExpansion: false
-  parameters:
+  - name: local-hostpath
+    defaultClass: false
+    reclaimPolicy: Delete
+    volumeBindingMode: WaitForFirstConsumer
+    # distributed support is not yet ready for expansion
+    allowVolumeExpansion: false
+    parameters:
 
-  mountOptions: []
-  secrets:
-    provisioner-secret:
-    controller-publish-secret:
-    node-stage-secret:
-    node-publish-secret:
-    controller-expand-secret:
+    mountOptions: []
+    secrets:
+      provisioner-secret:
+      controller-publish-secret:
+      node-stage-secret:
+      node-publish-secret:
+      controller-expand-secret:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []
@@ -34,13 +34,13 @@ controller:
   strategy: node
   externalProvisioner:
     extraArgs:
-    - --leader-election=false
-    - --node-deployment=true
-    - --node-deployment-immediate-binding=false
-    - --feature-gates=Topology=true
-    - --strict-topology=true
-    - --enable-capacity=true
-    - --capacity-ownerref-level=1
+      - --leader-election=false
+      - --node-deployment=true
+      - --node-deployment-immediate-binding=false
+      - --feature-gates=Topology=true
+      - --strict-topology=true
+      - --enable-capacity=true
+      - --capacity-ownerref-level=1
 
   externalAttacher:
     enabled: false
@@ -52,21 +52,21 @@ controller:
   externalSnapshotter:
     enabled: true
     extraArgs:
-    - --leader-election=false
-    - --node-deployment=true
+      - --leader-election=false
+      - --node-deployment=true
 
 node:
   driver:
     extraVolumeMounts:
-    - name: local-storage
-      mountPath: /var/lib/csi-local-hostpath
-      mountPropagation: Bidirectional
+      - name: local-storage
+        mountPath: /var/lib/csi-local-hostpath
+        mountPropagation: Bidirectional
 
   extraVolumes:
-  - name: local-storage
-    hostPath:
-      path: /var/lib/csi-local-hostpath
-      type: DirectoryOrCreate
+    - name: local-storage
+      hostPath:
+        path: /var/lib/csi-local-hostpath
+        type: DirectoryOrCreate
 
 driver:
   config:

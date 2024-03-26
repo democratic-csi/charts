@@ -243,12 +243,10 @@ spec:
           - "-c"
           - "--"
         args: [ "while true; do sleep 2; done;" ]
-        {{- if .Values.node.driver.resources }}
+        {{- if .Values.node.cleanup.resources }}
         resources:
 {{ toYaml .Values.node.cleanup.resources | indent 10 }}
         {{- end }}
-
-
         lifecycle:
           # note this runs *before* other containers are terminated
           preStop:

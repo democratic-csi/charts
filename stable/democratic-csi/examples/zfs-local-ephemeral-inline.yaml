@@ -4,14 +4,14 @@ csiDriver:
   name: "org.democratic-csi.zfs-ephemeral"
   attachRequired: false
   volumeLifecycleModes:
-  - Ephemeral
+    - Ephemeral
 
 controller:
   enabled: false
 
 driver:
   config:
-    #driver: 
+    #driver:
     # rest of per-driver config data/syntax
     driver: zfs-local-ephemeral-inline
     service:
@@ -29,4 +29,3 @@ driver:
         #refreservation:
         #  value: 5M
         # ...
-

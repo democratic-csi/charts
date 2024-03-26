@@ -1,21 +1,20 @@
 # driver only works with 1.16+
 csiDriver:
   # should be globally unique for a given cluster
-  name: "org.democratic-csi.nfs-client"
+  name: "org.democratic-csi.smb-client"
   fsGroupPolicy: File
 
 storageClasses:
-  - name: nfs-client
+  - name: smb-client
     defaultClass: false
     reclaimPolicy: Delete
     volumeBindingMode: Immediate
     allowVolumeExpansion: false
     parameters:
-      fsType: nfs
+      fsType: cifs
 
     mountOptions:
       - noatime
-      - nfsvers=3
     secrets:
       provisioner-secret:
       controller-publish-secret:
@@ -25,7 +24,7 @@ storageClasses:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []
-#- name: nfs-client
+#- name: smb-client
 #  secrets:
 #    snapshotter-secret:
 
@@ -34,7 +33,7 @@ driver:
     # please see the most up-to-date example of the corresponding config here:
     # https://github.com/democratic-csi/democratic-csi/tree/master/examples
     # YOU MUST COPY THE DATA HERE INLINE!
-    driver: nfs-client
+    driver: smb-client
     #...
 
 # There are 4 different approaches to installing the driver
@@ -88,12 +87,12 @@ controller:
 #      privileged: true
 #
 #    extraVolumeMounts:
-#    - name: nfs-storage
+#    - name: smb-storage
 #      mountPath: <controllerBasePath>
 #      mountPropagation: Bidirectional
 #
 #  extraVolumes:
-#  - name: nfs-storage
+#  - name: smb-storage
 #    hostPath:
 #      path: /already/mounted/path/to <shareHost>:<shareBasePath>
 #      type: Directory
@@ -116,12 +115,12 @@ controller:
 # do this if all nodes DO have the base volume mounted out-of-band from k8s
 #  driver:
 #    extraVolumeMounts:
-#    - name: nfs-storage
+#    - name: smb-storage
 #      mountPath: <controllerBasePath>
 #      mountPropagation: Bidirectional
 #
 #  extraVolumes:
-#  - name: nfs-storage
+#  - name: smb-storage
 #    hostPath:
 #      path: /already/mounted/path/to <shareHost>:<shareBasePath>
 #      type: Directory

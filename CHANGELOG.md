@@ -1,3 +1,11 @@
+# 0.14.6
+
+Released 2024-03-26
+
+- bump sidecar versions
+- new examples
+- support `seLinuxMount` on `CSIDriver` resource
+
 # 0.14.1
 
 Released 2023-07-16
@@ -9,7 +17,7 @@ Released 2023-07-16
 Released 2023-07-16
 
 BREAKING CHANGES: Some default values have changed which should be enabled on
-all drivers *except* the `*-local` drivers. In other words, you must explicitly
+all drivers _except_ the `*-local` drivers. In other words, you must explicitly
 disable the defaults now for `*-local` drivers with the `values.yaml` example
 below.
 

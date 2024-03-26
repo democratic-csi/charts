@@ -1,44 +1,46 @@
 csiDriver:
   # should be globally unique for a given cluster
-  name: "org.democratic-csi.iscsi-synology"
+  name: "org.democratic-csi.objectivefs"
+  fsGroupPolicy: File
 
 # add note here about volume expansion requirements
 storageClasses:
-  - name: synology-iscsi
+  - name: objectivefs
     defaultClass: false
     reclaimPolicy: Delete
     volumeBindingMode: Immediate
-    allowVolumeExpansion: true
+    allowVolumeExpansion: false
     parameters:
-      # for block-based storage can be ext3, ext4, xfs
-      # for nfs should be nfs
-      fsType: ext4
+      fsType: objectivefs
 
-    mountOptions: []
+    mountOptions:
+      - noatime
     secrets:
       provisioner-secret:
       controller-publish-secret:
       node-stage-secret:
+        # secrets are processed *after* volumeAttributes and therefore will take precedence
+        "env.OBJECTSTORE": ""
+        "env.ACCESS_KEY": ""
+        "env.SECRET_KEY": ""
+        "env.OBJECTIVEFS_PASSPHRASE": ""
+        # does NOT need admin key appended for node-manual operations
+        "env.OBJECTIVEFS_LICENSE": ""
+        "env.ENDPOINT": ""
+        # ...
       node-publish-secret:
       controller-expand-secret:
 
-volumeSnapshotClasses:
-  - name: synology-iscsi
-    parameters:
-    secrets:
-      snapshotter-secret:
-
 controller:
-  externalResizer:
-    enabled: true
-
   externalSnapshotter:
-    enabled: true
+    enabled: false
+  externalResizer:
+    enabled: false
 
 driver:
   config:
     # please see the most up-to-date example of the corresponding config here:
     # https://github.com/democratic-csi/democratic-csi/tree/master/examples
     # YOU MUST COPY THE DATA HERE INLINE!
-    driver: synology-iscsi
+    driver: objectivefs
     #...

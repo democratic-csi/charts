@@ -1,42 +1,43 @@
 csiDriver:
   # should be globally unique for a given cluster
   name: "org.democratic-csi.smb"
+  fsGroupPolicy: File
 
 # add note here about volume expansion requirements
 storageClasses:
-- name: zfs-generic-smb-csi
-  defaultClass: false
-  reclaimPolicy: Delete
-  volumeBindingMode: Immediate
-  allowVolumeExpansion: true
-  parameters:
-    # for block-based storage can be ext3, ext4, xfs
-    # for nfs should be nfs
-    # for smb should cifs
-    fsType: cifs
-      
-    # if true, volumes created from other snapshots will be
-    # zfs send/received instead of zfs cloned
-    # detachedVolumesFromSnapshots: "false"
-    
-    # if true, volumes created from other volumes will be
-    # zfs send/received instead of zfs cloned
-    # detachedVolumesFromVolumes: "false"
+  - name: zfs-generic-smb-csi
+    defaultClass: false
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    allowVolumeExpansion: true
+    parameters:
+      # for block-based storage can be ext3, ext4, xfs
+      # for nfs should be nfs
+      # for smb should cifs
+      fsType: cifs
 
-  mountOptions:
-  # can put these here or can be added to the node-stage-secret below
-  - username=foo
-  - password=bar
-  #- dir_mode=0777
-  #- file_mode=0777
-  #- guest
-  secrets:
-    provisioner-secret:
-    controller-publish-secret:
-    node-stage-secret:
-    #  mount_flags: "username=foo,password=bar"
-    node-publish-secret:
-    controller-expand-secret:
+      # if true, volumes created from other snapshots will be
+      # zfs send/received instead of zfs cloned
+      # detachedVolumesFromSnapshots: "false"
+
+      # if true, volumes created from other volumes will be
+      # zfs send/received instead of zfs cloned
+      # detachedVolumesFromVolumes: "false"
+
+    mountOptions:
+      # can put these here or can be added to the node-stage-secret below
+      - username=foo
+      - password=bar
+    #- dir_mode=0777
+    #- file_mode=0777
+    #- guest
+    secrets:
+      provisioner-secret:
+      controller-publish-secret:
+      node-stage-secret:
+      #  mount_flags: "username=foo,password=bar"
+      node-publish-secret:
+      controller-expand-secret:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []

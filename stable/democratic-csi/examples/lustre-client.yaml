@@ -2,30 +2,30 @@
 csiDriver:
   # should be globally unique for a given cluster
   name: "org.democratic-csi.lustre-client"
+  fsGroupPolicy: File
 
 storageClasses:
-- name: lustre-client
-  defaultClass: false
-  reclaimPolicy: Delete
-  volumeBindingMode: Immediate
-  allowVolumeExpansion: false
-  parameters:
-    fsType: lustre
+  - name: lustre-client
+    defaultClass: false
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    allowVolumeExpansion: false
+    parameters:
+      fsType: lustre
 
-  mountOptions: []
-  secrets:
-    provisioner-secret:
-    controller-publish-secret:
-    node-stage-secret:
-    node-publish-secret:
-    controller-expand-secret:
+    mountOptions: []
+    secrets:
+      provisioner-secret:
+      controller-publish-secret:
+      node-stage-secret:
+      node-publish-secret:
+      controller-expand-secret:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []
 #- name: lustre-client
 #  secrets:
 #    snapshotter-secret:
-
 
 driver:
   config:
@@ -58,8 +58,6 @@ controller:
 
   # For Options 3 and 4
   #strategy: node
-  
-  
 # Option 1
 # do this if the nodes do NOT already have the base volume mounted out-of-band from k8s
 #  driver:
@@ -97,7 +95,6 @@ controller:
 #    hostPath:
 #      path: /already/mounted/path/to <shareHost>:<shareBasePath>
 #      type: Directory
-
 
 # Options 3 and 4
 #node:

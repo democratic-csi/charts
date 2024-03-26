@@ -7,23 +7,23 @@ csiDriver:
   fsGroupPolicy: File
 
 storageClasses:
-- name: zfs-local-zvol
-  defaultClass: false
-  reclaimPolicy: Delete
-  volumeBindingMode: WaitForFirstConsumer
-  # distributed support is not yet ready for expansion
-  allowVolumeExpansion: false
-  parameters:
-    fsType: xfs
+  - name: zfs-local-zvol
+    defaultClass: false
+    reclaimPolicy: Delete
+    volumeBindingMode: WaitForFirstConsumer
+    # distributed support is not yet ready for expansion
+    allowVolumeExpansion: false
+    parameters:
+      fsType: xfs
 
-  mountOptions:
-  - noatime
-  secrets:
-    provisioner-secret:
-    controller-publish-secret:
-    node-stage-secret:
-    node-publish-secret:
-    controller-expand-secret:
+    mountOptions:
+      - noatime
+    secrets:
+      provisioner-secret:
+      controller-publish-secret:
+      node-stage-secret:
+      node-publish-secret:
+      controller-expand-secret:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []
@@ -34,16 +34,16 @@ volumeSnapshotClasses: []
 controller:
   enabled: true
   strategy: node
-  
+
   externalProvisioner:
     extraArgs:
-    - --leader-election=false
-    - --node-deployment=true
-    - --node-deployment-immediate-binding=false
-    - --feature-gates=Topology=true
-    - --strict-topology=true
-    - --enable-capacity=true
-    - --capacity-ownerref-level=1
+      - --leader-election=false
+      - --node-deployment=true
+      - --node-deployment-immediate-binding=false
+      - --feature-gates=Topology=true
+      - --strict-topology=true
+      - --enable-capacity=true
+      - --capacity-ownerref-level=1
 
   externalAttacher:
     enabled: false
@@ -55,8 +55,8 @@ controller:
   externalSnapshotter:
     enabled: true
     extraArgs:
-    - --leader-election=false
-    - --node-deployment=true
+      - --leader-election=false
+      - --node-deployment=true
 
 driver:
   config:

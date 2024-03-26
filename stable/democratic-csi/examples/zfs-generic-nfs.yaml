@@ -1,36 +1,37 @@
 csiDriver:
   # should be globally unique for a given cluster
   name: "org.democratic-csi.nfs"
+  fsGroupPolicy: File
 
 # add note here about volume expansion requirements
 storageClasses:
-- name: zfs-generic-nfs-csi
-  defaultClass: false
-  reclaimPolicy: Delete
-  volumeBindingMode: Immediate
-  allowVolumeExpansion: true
-  parameters:
-    # for block-based storage can be ext3, ext4, xfs
-    # for nfs should be nfs
-    fsType: nfs
-      
-    # if true, volumes created from other snapshots will be
-    # zfs send/received instead of zfs cloned
-    # detachedVolumesFromSnapshots: "false"
-    
-    # if true, volumes created from other volumes will be
-    # zfs send/received instead of zfs cloned
-    # detachedVolumesFromVolumes: "false"
+  - name: zfs-generic-nfs-csi
+    defaultClass: false
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    allowVolumeExpansion: true
+    parameters:
+      # for block-based storage can be ext3, ext4, xfs
+      # for nfs should be nfs
+      fsType: nfs
 
-  mountOptions:
-  - noatime
-  - nfsvers=3
-  secrets:
-    provisioner-secret:
-    controller-publish-secret:
-    node-stage-secret:
-    node-publish-secret:
-    controller-expand-secret:
+      # if true, volumes created from other snapshots will be
+      # zfs send/received instead of zfs cloned
+      # detachedVolumesFromSnapshots: "false"
+
+      # if true, volumes created from other volumes will be
+      # zfs send/received instead of zfs cloned
+      # detachedVolumesFromVolumes: "false"
+
+    mountOptions:
+      - noatime
+      - nfsvers=3
+    secrets:
+      provisioner-secret:
+      controller-publish-secret:
+      node-stage-secret:
+      node-publish-secret:
+      controller-expand-secret:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []

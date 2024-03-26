@@ -4,11 +4,17 @@ csiDriver:
   name: "org.democratic-csi.node-manual"
 
 controller:
-  enabled: false
+  externalAttacher:
+    enabled: true
+  externalProvisioner:
+    enabled: false
+  externalResizer:
+    enabled: false
+  externalSnapshotter:
+    enabled: false
 
 driver:
   config:
-    #driver: 
+    #driver:
     # rest of per-driver config data/syntax
     driver: node-manual
-
