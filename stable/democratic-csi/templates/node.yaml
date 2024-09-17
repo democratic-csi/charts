@@ -59,6 +59,7 @@ spec:
       {{- end }}
       # Required by iSCSI
       hostNetwork: {{ .Values.node.hostNetwork }}
+      dnsPolicy: {{ .Values.node.dnsPolicy }}
       hostAliases: {{ .Values.node.hostAliases }}
       # Required by multipath detach
       hostIPC: {{ .Values.node.hostIPC }}

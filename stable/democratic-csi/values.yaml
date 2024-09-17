@@ -67,6 +67,7 @@ controller:
       privileged: false
   replicaCount: 1
   hostNetwork: false
+  dnsPolicy: ClusterFirst
   hostAliases: []
   hostIPC: false
   annotations: {}
@@ -217,6 +218,7 @@ node:
       privileged: false
   enabled: true
   hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   hostAliases: []
   hostIPC: true
   hostPID: false
