@@ -58,6 +58,7 @@ spec:
       priorityClassName: "{{ .Values.controller.priorityClassName }}"
       {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
+      dnsPolicy: {{ .Values.controller.dnsPolicy }}
       hostAliases: {{ .Values.controller.hostAliases }}
       hostIPC: {{ .Values.controller.hostIPC }}
       containers:
