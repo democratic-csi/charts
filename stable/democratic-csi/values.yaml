@@ -204,6 +204,8 @@ controller:
 
   tolerations: []
 
+  topologySpreadConstraints: []
+
   affinity: {}
 
 node:
