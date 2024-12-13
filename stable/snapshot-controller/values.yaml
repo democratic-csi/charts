@@ -7,7 +7,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-
 controller:
   enabled: true
   rbac:
@@ -25,15 +24,3 @@ controller:
   - "--leader-election=true"
   - "--enable-distributed-snapshotting"
   extraArgs: []
-
-validatingWebhook:
-  enabled: false
-  rbac:
-    enabled: true
-  replicaCount: 3
-  image:
-    repository: registry.k8s.io/sig-storage/snapshot-validation-webhook
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
-
