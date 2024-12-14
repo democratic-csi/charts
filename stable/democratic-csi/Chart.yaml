@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "1.0"
 description: csi storage for container orchestration systems
 name: democratic-csi
-version: 0.14.7
+version: 0.15.0
