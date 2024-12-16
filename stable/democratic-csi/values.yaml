@@ -140,7 +140,6 @@ controller:
       - --csi-address={{ .csiSocketAddress }}
     # if you do not want to completely override the defaults use this
     extraArgs: []
-    # - --feature-gates=CSIVolumeGroupSnapshot=true
     resources:
 
   # https://github.com/kubernetes-csi/external-health-monitor

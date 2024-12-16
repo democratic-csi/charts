@@ -14,23 +14,6 @@ helm upgrade --install --namespace kube-system --create-namespace snapshot-contr
 kubectl -n kube-system logs -f -l app=snapshot-controller
 ```
 
-To use experimental volume group snapshot enable the feature gate on the controller:
-
-```
-controller:
-  extraArgs:
-  - --feature-gates=CSIVolumeGroupSnapshot=true
-```
-
-You must also enable the feature gate on the csi-snapshotter sidecar: https://github.com/democratic-csi/charts/blob/525b3be495dffa79e01dece6ef2aa9215f475924/stable/democratic-csi/values.yaml#L142
-
-```
-controller:
-  externalSnapshotter:
-    extraArgs:
-    - --feature-gates=CSIVolumeGroupSnapshot=true
-```
-
 # development
 
 ```

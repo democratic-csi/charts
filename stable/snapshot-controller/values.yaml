@@ -23,5 +23,4 @@ controller:
   - "--v=5"
   - "--leader-election=true"
   - "--enable-distributed-snapshotting"
-  extraArgs: [] 
-  # - --feature-gates=CSIVolumeGroupSnapshot=true
+  extraArgs: []
