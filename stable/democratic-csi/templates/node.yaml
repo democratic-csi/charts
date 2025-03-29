@@ -89,9 +89,9 @@ spec:
 
       {{- if .Values.node.driver.enabled }}
       - name: csi-driver
-        image: {{ .Values.node.driver.image }}
-        {{- if .Values.node.driver.imagePullPolicy }}
-        imagePullPolicy: {{ .Values.node.driver.imagePullPolicy }}
+        image: "{{ .Values.node.driver.image.registry }}:{{ .Values.node.driver.image.tag }}"
+        {{- if .Values.node.driver.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.node.driver.image.pullPolicy }}
         {{- end }}
         {{- if .Values.node.driver.lifecycle }}
         lifecycle:
@@ -209,7 +209,7 @@ spec:
 
       {{- if .Values.node.driverRegistrar.enabled }}
       - name: driver-registrar
-        image: {{ .Values.node.driverRegistrar.image }}
+        image: "{{ .Values.node.driverRegistrar.image.registry }}:{{ .Values.node.driverRegistrar.image.tag }}"
         args:
         {{- range .Values.node.driverRegistrar.args }}
         - {{ tpl . $root }}
@@ -244,7 +244,7 @@ spec:
           mountPath: {{ .Values.node.kubeletHostPath }}
 
       - name: cleanup
-        image: {{ .Values.node.cleanup.image }}
+        image: "{{ .Values.node.cleanup.image.registry }}:{{ .Values.node.cleanup.image.tag }}"
         command:
           - "/bin/sh"
           - "-c"

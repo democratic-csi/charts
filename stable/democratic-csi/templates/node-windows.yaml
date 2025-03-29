@@ -91,14 +91,14 @@ spec:
 
       {{- if .Values.node.driver.enabled }}
       - name: csi-driver
-        image: {{ .Values.node.driver.image }}
+        image: "{{ .Values.node.driver.image.registry }}:{{ .Values.node.driver.image.tag }}"
         workingDir: "$env:CONTAINER_SANDBOX_MOUNT_POINT/app"
         command:
         - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/node.exe"
         - "--expose-gc"
         - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/democratic-csi"
-        {{- if .Values.node.driver.imagePullPolicy }}
-        imagePullPolicy: {{ .Values.node.driver.imagePullPolicy }}
+        {{- if .Values.node.driver.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.node.driver.image.pullPolicy }}
         {{- end }}
         {{- if .Values.node.driver.lifecycle }}
         lifecycle:
@@ -168,7 +168,7 @@ spec:
 
       {{- if .Values.node.driverRegistrar.enabled }}
       - name: driver-registrar
-        image: {{ .Values.node.driverRegistrar.image }}
+        image: "{{ .Values.node.driverRegistrar.image.registry }}:{{ .Values.node.driverRegistrar.image.tag }}"
         args:
         {{- range .Values.node.driverRegistrar.args }}
         - {{ tpl . $root }}

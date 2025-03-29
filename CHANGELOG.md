@@ -1,3 +1,15 @@
+# 0.15.0
+
+Released 2025-03-29
+
+- BREAKING CHANGE, `image` values are now broken into `image.registry` and `image.tag`
+- BREAKING CHANGE, `{controller,node}.driver.imagePullPolciy` is now `{controller,node}.driver.image.pullPolciy`
+- BREAKING CHANGE, `csi-snapshotter` now defaults to `v8`, please update your `snapshot-controller` accordingly (snapshot chart version `0.3.0` from this repo if you use it)
+- support setting `dnsPolicy`
+- enable `priorityClassName` by default
+- support `nvme` host dir mounting
+- charts published as oci artifacts
+
 # 0.14.6
 
 Released 2024-03-26

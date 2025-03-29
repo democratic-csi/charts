@@ -1,6 +1,8 @@
 {{- if and .Values.controller.enabled .Values.controller.rbac.enabled }}
 # RBAC file for the snapshot controller.
 #
+# https://github.com/kubernetes-csi/external-snapshotter/blob/master/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
+#
 # The snapshot controller implements the control loop for CSI snapshot functionality.
 # It should be installed as part of the base Kubernetes distribution in an appropriate
 # namespace for components implementing base system functionality. For installing with
@@ -47,10 +49,27 @@ rules:
     verbs: ["patch"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots"]
-    verbs: ["get", "list", "watch", "update", "patch"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots/status"]
     verbs: ["update", "patch"]
+
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotcontents"]
+    verbs: ["create", "get", "list", "watch", "update", "delete", "patch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotcontents/status"]
+    verbs: ["patch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshots"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshots/status"]
+    verbs: ["update", "patch"]
+
   # Enable this RBAC rule only when using distributed snapshotting, i.e. when the enable-distributed-snapshotting flag is set to true
   - apiGroups: [""]
     resources: ["nodes"]

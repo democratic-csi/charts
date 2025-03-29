@@ -2,11 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
 
 controller:
   enabled: true
@@ -21,9 +19,9 @@ controller:
     tag: ""
 
   args:
-  - "--v=5"
-  - "--leader-election=true"
-  - "--enable-distributed-snapshotting"
+    - "--v=5"
+    - "--leader-election=true"
+    - "--enable-distributed-snapshotting"
   extraArgs: []
 
 validatingWebhook:
@@ -36,4 +34,3 @@ validatingWebhook:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
-

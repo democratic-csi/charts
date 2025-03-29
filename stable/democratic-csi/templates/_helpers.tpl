@@ -47,7 +47,7 @@ Create chart name and version as used by the chart label.
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-attacher
 - name: external-attacher
-  image: {{ .Values.controller.externalAttacher.image }}
+  image: "{{ .Values.controller.externalAttacher.image.registry }}:{{ .Values.controller.externalAttacher.image.tag }}"
   args:
   {{- range .Values.controller.externalAttacher.args }}
   - {{ tpl . $root }}
@@ -74,7 +74,7 @@ Create chart name and version as used by the chart label.
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-provisioner
 - name: external-provisioner
-  image: {{ .Values.controller.externalProvisioner.image }}
+  image: "{{ .Values.controller.externalProvisioner.image.registry }}:{{ .Values.controller.externalProvisioner.image.tag }}"
   args:
   {{- range .Values.controller.externalProvisioner.args }}
   - {{ tpl . $root }}
@@ -117,7 +117,7 @@ Create chart name and version as used by the chart label.
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-resizer
 - name: external-resizer
-  image: {{ .Values.controller.externalResizer.image }}
+  image: "{{ .Values.controller.externalResizer.image.registry }}:{{ .Values.controller.externalResizer.image.tag }}"
   args:
   {{- range .Values.controller.externalResizer.args }}
   - {{ tpl . $root }}
@@ -163,7 +163,7 @@ Create chart name and version as used by the chart label.
 #  - https://github.com/rook/rook/issues/4178
 #  - https://github.com/kubernetes-csi/external-snapshotter/issues/147#issuecomment-513664310
 - name: external-snapshotter
-  image: {{ .Values.controller.externalSnapshotter.image }}
+  image: "{{ .Values.controller.externalSnapshotter.image.registry }}:{{ .Values.controller.externalSnapshotter.image.tag }}"
   args:
   {{- range .Values.controller.externalSnapshotter.args }}
   - {{ tpl . $root }}
@@ -206,7 +206,7 @@ Create chart name and version as used by the chart label.
 {{- $root := . -}}
 # https://github.com/kubernetes-csi/external-health-monitor
 - name: external-health-monitor-controller
-  image: {{ .Values.controller.externalHealthMonitorController.image }}
+  image: "{{ .Values.controller.externalHealthMonitorController.image.registry }}:{{ .Values.controller.externalHealthMonitorController.image.tag }}"
   args:
   {{- range .Values.controller.externalHealthMonitorController.args }}
   - {{ tpl . $root }}
@@ -232,7 +232,7 @@ Create chart name and version as used by the chart label.
 {{- with index . 1 }}
 {{- $root := . -}}
 - name: csi-proxy
-  image: {{ .Values.csiProxy.image }}
+  image: "{{ .Values.csiProxy.image.registry }}:{{ .Values.csiProxy.image.tag }}"
   {{- if eq $windows "1" }}
   workingDir: "$env:CONTAINER_SANDBOX_MOUNT_POINT/app"
   command:
