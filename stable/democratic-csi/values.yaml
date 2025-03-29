@@ -145,7 +145,7 @@ controller:
   # https://github.com/kubernetes-csi/external-health-monitor
   externalHealthMonitorController:
     enabled: false
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
     args:
       - --v=5
       - --leader-election
@@ -261,6 +261,10 @@ node:
 
     iscsiDirHostPath: /etc/iscsi
     iscsiDirHostPathType: Directory
+
+    nvmeDirMountEnabled: false
+    nvmeDirHostPath: /etc/nvme
+    nvmeDirHostPathType: Directory
   # https://kubernetes-csi.github.io/docs/node-driver-registrar.html
   driverRegistrar:
     enabled: true

@@ -3,6 +3,7 @@
 {{- $controllerStrategy := "node" -}}
 {{- $_ := set $root "csiSocketAddress" "/csi-data/csi.sock" -}}
 {{- $mountIscsi := include "democratic-csi.mount-iscsi" . | eq "true" }}
+{{- $mountNvme := .Values.node.driver.nvmeDirMountEnabled }}
 ---
 kind: DaemonSet
 apiVersion: apps/v1
@@ -169,6 +170,11 @@ spec:
           mountPath: /var/lib/iscsi
           mountPropagation: Bidirectional
         {{- end }}
+        {{- if $mountNvme }}
+        - name: nvme-dir
+          mountPath: /etc/nvme
+          mountPropagation: Bidirectional
+        {{- end }}
         - name: modules-dir
           mountPath: /lib/modules
           readOnly: true
@@ -285,6 +291,12 @@ spec:
       - name: iscsi-info
         hostPath:
           path: /var/lib/iscsi
+      {{- end }}
+      {{- if $mountNvme }}
+      - name: nvme-dir
+        hostPath:
+          path: {{ .Values.node.driver.nvmeDirHostPath }}
+          type: {{ .Values.node.driver.nvmeDirHostPathType }}
       {{- end }}
       - name: dev-dir
         hostPath:
