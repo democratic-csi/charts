@@ -60,6 +60,7 @@ spec:
       priorityClassName: "{{ .Values.node.priorityClassName }}"
       {{- end }}
       hostNetwork: {{ .Values.node.hostNetwork }}
+      dnsPolicy: {{ .Values.node.dnsPolicy }}
       hostAliases: {{ .Values.node.hostAliases }}
       securityContext:
         windowsOptions:
