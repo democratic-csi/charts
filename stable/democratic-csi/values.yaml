@@ -299,6 +299,26 @@ storageClasses: []
 #    # for nfs should be nfs
 #    fsType:
 #  mountOptions: []
+
+#  existingSecrets:
+#    anyName:  # can be any arbitrary name
+#      name: existingSecretName
+#     namespace: existingSecretNamespace
+
+# existingSecrets will look for an existing secret with name/namespace and use the values within for authentication
+# the existing secret should contain something similar to with proper references for your secret:
+#   target:
+#     name: existingSecretName
+#     template:
+#       engineVersion: v2
+#       data:
+#          node-db.node.session.auth.authmethod: "CHAP"
+#          node-db.node.session.auth.username: "{{ .iscsi_username }}"
+#          node-db.node.session.auth.password: "{{ .iscsi_password }}"
+#          node-db.node.session.auth.username_in: "{{ .iscsi_username_in }}"
+#          node-db.node.session.auth.password_in: "{{ .iscsi_password_in }}"
+# if you use an existingSecret -- any `secrets` below WILL BE IGNORED.
+
 #  secrets:
 #    provisioner-secret:
 #    controller-publish-secret:
