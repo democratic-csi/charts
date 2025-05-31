@@ -175,6 +175,17 @@ controller:
   clusterDriverRegistrar:
     enabled: false
 
+  extraContainers: []
+  #  - name: csi-socket-access
+  #    image: debian:trixie
+  #    args:
+  #      - sleep
+  #      - infinity
+  #    resources:
+  #    volumeMounts:
+  #      - name: socket-dir
+  #        mountPath: /csi-data
+
   livenessProbe:
     enabled: true
 
