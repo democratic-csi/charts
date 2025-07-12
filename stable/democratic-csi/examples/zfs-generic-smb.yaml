@@ -26,8 +26,9 @@ storageClasses:
 
     mountOptions:
       # can put these here or can be added to the node-stage-secret below
-      - username=foo
-      - password=bar
+      # username and pw must match the values you set when creating the user on server
+      - username=smbroot
+      - password=pw
     #- dir_mode=0777
     #- file_mode=0777
     #- guest
@@ -35,7 +36,7 @@ storageClasses:
       provisioner-secret:
       controller-publish-secret:
       node-stage-secret:
-      #  mount_flags: "username=foo,password=bar"
+      #  mount_flags: "username=smbroot,password=pw"
       node-publish-secret:
       controller-expand-secret:
 
