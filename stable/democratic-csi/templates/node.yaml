@@ -279,7 +279,7 @@ spec:
       - name: registration-dir
         hostPath:
           path: {{ .Values.node.kubeletHostPath }}/plugins_registry
-          type: Directory
+          type: DirectoryOrCreate
       - name: kubelet-dir
         hostPath:
           path: {{ .Values.node.kubeletHostPath }}
