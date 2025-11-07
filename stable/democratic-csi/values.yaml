@@ -182,7 +182,7 @@ controller:
   driver:
     enabled: true
     image:
-      registry: docker.io/democraticcsi/democratic-csi
+      registry: ghcr.io/democratic-csi/democratic-csi
       tag: latest
       # pullPolicy: Always
     logLevel: info
@@ -256,7 +256,7 @@ node:
   driver:
     enabled: true
     image:
-      registry: docker.io/democraticcsi/democratic-csi
+      registry: ghcr.io/democratic-csi/democratic-csi
       tag: latest
       # pullPolicy: Always
     logLevel: info
@@ -358,7 +358,7 @@ volumeSnapshotClasses: []
 csiProxy:
   enabled: true
   image:
-    registry: docker.io/democraticcsi/csi-grpc-proxy
+    registry: ghcr.io/democratic-csi/csi-grpc-proxy
     tag: v0.5.6
   resources:
 
