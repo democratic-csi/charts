@@ -83,6 +83,10 @@ spec:
 {{ include "democratic-csi.external-health-monitor-controller" (list $ . "0") | indent 6 }}
       {{- end }}
 
+{{- if .Values.controller.extraContainers }}
+{{ toYaml .Values.controller.extraContainers | indent 6 }}
+{{- end }}
+
       {{- if .Values.controller.driver.enabled }}
       - name: csi-driver
         image: "{{ .Values.controller.driver.image.registry }}:{{ .Values.controller.driver.image.tag }}"
