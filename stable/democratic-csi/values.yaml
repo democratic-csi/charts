@@ -236,6 +236,8 @@ node:
   # windows support
   windows:
     enabled: false
+  linux:
+    enabled: true
   rbac:
     enabled: true
     openshift:
@@ -370,7 +372,7 @@ csiProxy:
   enabled: true
   image:
     registry: ghcr.io/democratic-csi/csi-grpc-proxy
-    tag: v0.5.6
+    tag: v0.5.7
   resources:
 
 # Configure a pod security policy to allow privileged pods

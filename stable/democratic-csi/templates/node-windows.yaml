@@ -94,9 +94,13 @@ spec:
         image: "{{ .Values.node.driver.image.registry }}:{{ .Values.node.driver.image.tag }}"
         workingDir: "$env:CONTAINER_SANDBOX_MOUNT_POINT/app"
         command:
-        - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/node.exe"
-        - "--expose-gc"
-        - "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/democratic-csi"
+        - powershell
+        - $env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/entrypoint.ps1
+        #command:
+        #- "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/node.exe"
+        #- "--expose-gc"
+        #- "$env:CONTAINER_SANDBOX_MOUNT_POINT/app/bin/democratic-csi"
+        
         {{- if .Values.node.driver.image.pullPolicy }}
         imagePullPolicy: {{ .Values.node.driver.image.pullPolicy }}
         {{- end }}
@@ -128,8 +132,8 @@ spec:
               fieldPath: spec.nodeName
         - name: NODE_EXTRA_CA_CERTS
           value: "/tmp/certs/extra-ca-certs.crt"
-        - name: LOG_MEMORY_USAGE
-          value: "1"
+        #- name: LOG_MEMORY_USAGE
+        #  value: "1"
 
 {{- if .Values.node.driver.extraEnv }}
 {{ toYaml .Values.node.driver.extraEnv | indent 8 }}
