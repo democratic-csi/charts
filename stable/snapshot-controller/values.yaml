@@ -19,10 +19,11 @@ controller:
     tag: ""
 
   args:
-    - "--v=5"
+    - "--v={{ .Values.controller.verbosityLevel }}"
     - "--leader-election=true"
     - "--enable-distributed-snapshotting"
   extraArgs: []
+  verbosityLevel: 5
 
 validatingWebhook:
   enabled: false
