@@ -26,12 +26,31 @@ storageClasses:
     mountOptions:
       - noatime
       - nfsvers=3
-    secrets:
-      provisioner-secret:
-      controller-publish-secret:
-      node-stage-secret:
-      node-publish-secret:
-      controller-expand-secret:
+
+    # existingSecrets will look for an existing secret with name/namespace and use the values within for authentication
+    # the existing secret should contain something similar to with proper references for your secret:
+    #   target:
+    #     name: existingSecretName
+    #     template:
+    #       engineVersion: v2
+    #       data:
+    #          node-db.node.session.auth.authmethod: "CHAP"
+    #          node-db.node.session.auth.username: "{{ .iscsi_username }}"
+    #          node-db.node.session.auth.password: "{{ .iscsi_password }}"
+    #          node-db.node.session.auth.username_in: "{{ .iscsi_username_in }}"
+    #          node-db.node.session.auth.password_in: "{{ .iscsi_password_in }}"
+    existingSecret:
+      nfs-chap-secret:
+        name: existingSecretName
+        namespace: existingSecretNameSpace
+
+    # you can use EITHER an existingSecret or inline secrets below--not both.
+    # secrets:
+    #   provisioner-secret:
+    #   controller-publish-secret:
+    #   node-stage-secret:
+    #   node-publish-secret:
+    #   controller-expand-secret:
 
 # if your cluster supports snapshots you may enable below
 volumeSnapshotClasses: []
