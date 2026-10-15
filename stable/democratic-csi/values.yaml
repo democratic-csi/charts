@@ -269,6 +269,14 @@ node:
       registry: docker.io/busybox
       tag: 1.37.0
     resources:
+    # mountPropagation of the cleanup container's plugins-dir mount
+    # (<kubeletHostPath>/plugins). Unset keeps the Kubernetes default (None):
+    # the container then holds a private copy of every volume mount under the
+    # plugins dir that existed when it started, and host unmounts never reach
+    # those copies (a block device stays referenced after the host unmounts it,
+    # e.g. on drain). The container only deletes sockets and never creates
+    # mounts, so HostToContainer is sufficient and recommended.
+    pluginsDirMountPropagation:
 
   # democratic-csi node
   driver:
@@ -315,6 +323,13 @@ node:
     extraArgs: []
     resources:
     verbosityLevel: 5
+    # mountPropagation of the driver-registrar container's kubelet-dir mount
+    # (<kubeletHostPath>). Unset keeps the Kubernetes default (None): the
+    # container then holds a private copy of every pod/volume mount on the node
+    # that existed when it started, and host unmounts never reach those copies.
+    # The registrar never creates mounts, so HostToContainer is sufficient and
+    # recommended.
+    kubeletDirMountPropagation:
 
   extraVolumes: []
   #  - name: foo

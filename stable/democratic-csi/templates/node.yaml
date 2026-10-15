@@ -242,6 +242,9 @@ spec:
           mountPath: /registration
         - name: kubelet-dir
           mountPath: {{ .Values.node.kubeletHostPath }}
+          {{- with .Values.node.driverRegistrar.kubeletDirMountPropagation }}
+          mountPropagation: {{ . }}
+          {{- end }}
 
       - name: cleanup
         image: "{{ .Values.node.cleanup.image.registry }}:{{ .Values.node.cleanup.image.tag }}"
@@ -263,6 +266,9 @@ spec:
         volumeMounts:
         - name: plugins-dir
           mountPath: /plugins
+          {{- with .Values.node.cleanup.pluginsDirMountPropagation }}
+          mountPropagation: {{ . }}
+          {{- end }}
         - name: registration-dir
           mountPath: /registration
       {{- end }}
