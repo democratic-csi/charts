@@ -62,6 +62,32 @@ Remove ssh private key from disk to make sure we do not add it to git
 ```console
 $ rm ssh-key
 ```
+
+Add the public key as annotation to the secret for reference
+```console
+$ kubectl annotate secrets/ssh-key "pubkey=$(cat ssh-key.pub)"
+secret/ssh-key annotated
+```
+
+The secret should look something like the following
+```console
+$ kubectl get secret/ssh-key -o yaml
+apiVersion: v1
+data:
+  ssh-key: <base64 encoded ssh private key>
+kind: Secret
+metadata:
+  annotations:
+    pubkey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIXXX6auag5rZYjpLy5hwOeBLRPzSUOn7xo7Sgrte4hd
+  creationTimestamp: "2026-11-04T12:17:25Z"
+  name: ssh-key
+  namespace: democratic-csi-system
+  resourceVersion: "1977154"
+  uid: 03d328f9-ffe4-4c34-ac38-e02f816dee02
+type: Opaque
+```
+
+
 ### 2. Update configuration to use the new secret
 
 ```yaml
