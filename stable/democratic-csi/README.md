@@ -93,7 +93,7 @@ driver:
 
 ### 3. Update credential on other side
 
-You also need to update the crendial on the service you are trying to connect to.
+You also need to update the credential on the service you are trying to connect to.
 
 So for SSH, add the public key to the authorized_keys for the user mentioned at `driver.config.sshConnection.username`.
 
