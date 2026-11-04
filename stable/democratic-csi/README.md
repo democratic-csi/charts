@@ -53,7 +53,7 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
-# Then we save it in the kubernetes `Secret/ssh-key`
+Then we save it in the kubernetes `Secret/ssh-key`
 ```console
 $ kubectl create secret generic ssh-key --from-file=ssh-key=./ssh-key
 secret/ssh-key created
