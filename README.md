@@ -21,6 +21,10 @@ helm repo update
 if using k8s < 1.17 please use chart version 0.5.0
 ```
 
+## Credentials from kubernetes Secrets
+
+See [stable/democratic-csi/README.md](stable/democratic-csi/README.md)
+
 # links
 
 - https://github.com/democratic-csi/democratic-csi

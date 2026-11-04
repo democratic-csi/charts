@@ -21,6 +21,108 @@ helm repo update
 if using k8s < 1.17 please use chart version 0.5.0
 ```
 
+## Credentials from kubernetes Secrets
+
+The configuration under `driver.config` is able to read from environment variables, which makes it possible to load credentials from other sources instead of inline in the config.
+
+The below example is for SSH, but this can be for any credential mentioned under `driver.config`.
+
+
+### 1. Generate an SSH key and save it to a Kubernetes Secret
+
+First we generate a new SSH key (we use an empty `echo` to disable setting a password).
+
+```console
+$ echo '' | ssh-keygen -f ./ssh-key
+Generating public/private ed25519 key pair.
+Your identification has been saved in ssh-key
+Your public key has been saved in ssh-key.pub
+The key fingerprint is:
+SHA256:E70Ws7U1qjMSvBw8zEjejtolBO465Vrh59BBxu/XB3Y user@hostname
+The key's randomart image is:
++--[ED25519 256]--+
+|                 |
+|     .   .       |
+|    . = . + . o  |
+|   . * O . * + . |
+|    o = S + = E  |
+|   o.+ * B + o   |
+|   o= = B = . .  |
+|  .o.* o o o .   |
+|  oo. o          |
++----[SHA256]-----+
+```
+
+Then we save it in the kubernetes `Secret/ssh-key`
+```console
+$ kubectl create secret generic ssh-key --from-file=ssh-key=./ssh-key
+secret/ssh-key created
+```
+Remove ssh private key from disk to make sure we do not add it to git
+```console
+$ rm ssh-key
+```
+
+Add the public key as annotation to the secret for reference
+```console
+$ kubectl annotate secrets/ssh-key "pubkey=$(cat ssh-key.pub)"
+secret/ssh-key annotated
+```
+
+The secret should look something like the following
+```console
+$ kubectl get secret/ssh-key -o yaml
+apiVersion: v1
+data:
+  ssh-key: <base64 encoded ssh private key>
+kind: Secret
+metadata:
+  annotations:
+    pubkey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIXXX6auag5rZYjpLy5hwOeBLRPzSUOn7xo7Sgrte4hd
+  creationTimestamp: "2026-11-04T12:17:25Z"
+  name: ssh-key
+  namespace: democratic-csi-system
+  resourceVersion: "1977154"
+  uid: 03d328f9-ffe4-4c34-ac38-e02f816dee02
+type: Opaque
+```
+
+
+### 2. Update configuration to use the new secret
+
+```yaml
+node:
+  driver:
+    extraEnv:
+      - name: SSH_PRIVATE_KEY
+        valueFrom:
+          secretKeyRef:
+            name: ssh-key
+            key: ssh-key
+controller:
+  driver:
+    extraEnv:
+      - name: SSH_PRIVATE_KEY
+        valueFrom:
+          secretKeyRef:
+            name: ssh-key
+            key: ssh-key
+
+driver:
+  config:
+    driver: your-driver-name  # e.g. zfs-generic-nvmeof
+    # ...
+    sshConnection:
+      # ...
+      privateKey: "${SSH_PRIVATE_KEY}"
+```
+
+### 3. Update credential on other side
+
+You also need to update the credential on the service you are trying to connect to.
+
+So for SSH, add the public key to the authorized_keys for the user mentioned at `driver.config.sshConnection.username`.
+
 # links
 
 - https://github.com/democratic-csi/democratic-csi
